@@ -4,6 +4,28 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Lineup Legends</title>
+
+<!-- Open Graph — controls preview in WhatsApp, iMessage, Twitter, Facebook -->
+<meta property="og:title" content="⚽ Lineup Legends — Can you guess the lineup?"/>
+<meta property="og:description" content="Guess the famous football lineup. How good is your football knowledge? Challenge your mates and see who knows their football."/>
+<meta property="og:url" content="https://lineuplegends.netlify.app"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://lineuplegends.netlify.app/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:site_name" content="Lineup Legends"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="⚽ Lineup Legends — Can you guess the lineup?"/>
+<meta name="twitter:description" content="Guess the famous football lineup. Challenge your mates and see who knows their football."/>
+<meta name="twitter:image" content="https://lineuplegends.netlify.app/og-image.png"/>
+
+<!-- Mobile app feel -->
+<meta name="theme-color" content="#0d1b2a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Lineup Legends"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -434,36 +456,44 @@ header{
 
 <div id="win">
   <div class="wcard">
-    <div class="wgrade-block">
-      <div class="wgrade-letter" id="wgrade-letter">-</div>
-      <div class="wgrade-label" id="wgrade-label">-</div>
+    <!-- Step 1: Name entry — gates the results -->
+    <div id="wname-screen">
+      <div id="wgrade-letter-pre" style="font-family:var(--fh);font-size:3.5rem;font-weight:800;line-height:1;margin-bottom:4px">-</div>
+      <div id="wgrade-label-pre" style="font-family:var(--fh);font-size:1rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">-</div>
+      <div id="wsub-pre" style="font-size:0.72rem;color:var(--muted);margin-bottom:4px"></div>
+      <div id="wfinal-score-pre" style="font-family:var(--fh);font-size:2.8rem;font-weight:800;color:var(--lime);line-height:1;margin-bottom:2px">-</div>
+      <div style="font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">pts / 1,100</div>
+      <div id="wt-pre" style="font-size:0.82rem;color:var(--muted);margin-bottom:20px">⏱ -</div>
+      <div style="font-family:var(--fh);font-size:0.95rem;font-weight:700;color:var(--white);margin-bottom:12px">Who are you? Add your name to save your score and trash talk your mates 👊</div>
+      <div id="wname-row">
+        <input id="wname-input" type="text" placeholder="Your name…" maxlength="20"
+          autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false"/>
+        <button class="wbtn wbtn-submit" id="submit-score-btn">Let's go →</button>
+      </div>
+      <div id="wsubmit-msg"></div>
+      <button id="skip-name-btn" style="background:none;border:none;color:var(--muted);font-size:0.7rem;cursor:pointer;margin-top:10px;text-decoration:underline">Skip (anonymous)</button>
     </div>
-    <div class="wsub" id="wsub"></div>
-    <div class="wscore-block">
-      <div class="wscore-num" id="wfinal-score">-</div>
-      <div class="wscore-lbl">pts / 1,100</div>
-    </div>
-    <div id="wgrid-display"></div>
-    <div id="wgrid-legend">
-      <span>🟩 Clean</span>
-      <span>🟨 Hints</span>
-      <span>🟥 Revealed</span>
-    </div>
-    <div class="wstats-row">
-      <div class="wstat-pill" id="wt">⏱ -</div>
-    </div>
-    <div class="wpenalty-row" id="wpenalty-row"></div>
-    <div class="wshare" id="wshare-text"></div>
-    <div id="wname-row">
-      <input id="wname-input" type="text" placeholder="Your name for leaderboard…" maxlength="20"
-        autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false"/>
-      <button class="wbtn wbtn-submit" id="submit-score-btn">Submit</button>
-    </div>
-    <div id="wsubmit-msg"></div>
-    <div class="wbtns">
-      <button class="wbtn wbtn-challenge" id="challenge-btn">⚔️ Challenge</button>
-      <button class="wbtn wbtn-lb" id="view-lb-btn">🏅 Board</button>
-      <button class="wbtn wbtn-play" id="again-btn">▶ Play</button>
+    <!-- Step 2: Full results — shown after name entry -->
+    <div id="wresults-screen" style="display:none">
+      <div class="wgrade-block">
+        <div class="wgrade-letter" id="wgrade-letter">-</div>
+        <div class="wgrade-label" id="wgrade-label">-</div>
+      </div>
+      <div class="wsub" id="wsub"></div>
+      <div class="wscore-block">
+        <div class="wscore-num" id="wfinal-score">-</div>
+        <div class="wscore-lbl">pts / 1,100</div>
+      </div>
+      <div id="wgrid-display"></div>
+      <div id="wgrid-legend"><span>🟩 Clean</span><span>🟨 Hints</span><span>🟥 Revealed</span></div>
+      <div class="wstats-row"><div class="wstat-pill" id="wt">⏱ -</div></div>
+      <div class="wpenalty-row" id="wpenalty-row"></div>
+      <div class="wshare" id="wshare-text"></div>
+      <div class="wbtns">
+        <button class="wbtn wbtn-challenge" id="challenge-btn">⚔️ Challenge</button>
+        <button class="wbtn wbtn-lb" id="view-lb-btn">🏅 Board</button>
+        <button class="wbtn wbtn-play" id="again-btn">▶ Play</button>
+      </div>
     </div>
   </div>
 </div>
@@ -477,6 +507,7 @@ header{
     </div>
     <!-- Mode tabs: Overall vs Per Lineup -->
     <div id="lb-mode-tabs">
+      <button class="lb-mode-tab" id="tab-group" style="display:none">👥 Group</button>
       <button class="lb-mode-tab active" id="tab-lineup">⚽ By Lineup</button>
       <button class="lb-mode-tab" id="tab-overall">🌍 Overall</button>
     </div>
@@ -1242,7 +1273,7 @@ function showWin(){
   S.score=finalScore;
   document.getElementById('wsub').textContent=`${S.puzzle.team} · ${S.puzzle.year} · ${S.puzzle.competition}`;
   // Show challenge result if applicable
-  const chalResult=checkChallengeWin(finalScore,challengeParam);
+  const chalResult=checkChallengeWin(finalScore,elapsed,challengeParam);
   if(chalResult){
     const sub=document.getElementById('wsub');
     const div=document.createElement('div');
@@ -1284,16 +1315,23 @@ function showWin(){
     return '🟨'; // used some hints
   }).join('');
 
-  const shareText=
-`⚽ Lineup Legends
-${S.puzzle.team} · ${S.puzzle.year} · ${fmt}
+  // Flat single row of 11 squares for share — clean like Wordle
+  const flatGrid = S.puzzle.players.map((_,i) => {
+    if(S.revealedPlayers && S.revealedPlayers.has(i)) return '🟥';
+    return (S.natDone.has(i)||(S.lettersRevealed.get(i)||0)>0) ? '🟨' : '🟩';
+  }).join('');
 
-${grid}
+  const totalHints = S.natDone.size + Array.from(S.lettersRevealed.values()).reduce((a,b)=>a+b,0) + (S.revealedPlayers?S.revealedPlayers.size:0);
 
-Grade: ${grade.letter} — ${grade.label}
-⏱ ${timeStr}
-🏆 ${finalScore.toLocaleString()}/1,100
-Beat my grade? 👊`;
+  const shareText =
+`⚽ Lineup Legends #${S.puzzle.id}
+${S.puzzle.team} ${S.puzzle.year} (${fmt})
+
+${flatGrid}
+
+Clues: ${totalHints}  ·  Time: ${timeStr}  ·  Grade: ${grade.letter}
+
+lineuplegends.netlify.app`;
 
   document.getElementById('wshare-text').textContent=shareText;
 
@@ -1332,6 +1370,22 @@ Beat my grade? 👊`;
     gridEl.innerHTML=rows.reverse().map(r=>r.join('')).join('<br>');
   }
 
+  // Populate name screen preview
+  const glPre=document.getElementById('wgrade-letter-pre');
+  if(glPre){glPre.textContent=grade.letter;glPre.style.color=grade.color;}
+  const el2=document.getElementById('wgrade-label-pre');if(el2)el2.textContent=grade.label;
+  const el3=document.getElementById('wsub-pre');if(el3)el3.textContent=`${S.puzzle.team} · ${S.puzzle.year}`;
+  const el4=document.getElementById('wfinal-score-pre');if(el4)el4.textContent=finalScore.toLocaleString();
+  const el5=document.getElementById('wt-pre');if(el5)el5.textContent=`⏱ ${timeStr}`;
+  // Reset screens
+  const ns=document.getElementById('wname-screen');
+  const rs=document.getElementById('wresults-screen');
+  if(ns)ns.style.display='block';
+  if(rs)rs.style.display='none';
+  // Clear previous name entry state
+  const ni=document.getElementById('wname-input');if(ni){ni.value='';ni.disabled=false;}
+  const sm=document.getElementById('wsubmit-msg');if(sm)sm.textContent='';
+  const sb=document.getElementById('submit-score-btn');if(sb){sb.disabled=false;sb.textContent="Let's go →";}
   haptic('win');soundWin();
   document.getElementById('win').classList.add('show');
   }catch(e){
@@ -1450,6 +1504,38 @@ document.getElementById('picker-random').addEventListener('click', () => {
   hidePicker(); init(p);
 });
 
+function showResultsScreen(){
+  document.getElementById('wname-screen').style.display='none';
+  document.getElementById('wresults-screen').style.display='block';
+}
+
+async function submitScore(){
+  const nameEl=document.getElementById('wname-input');
+  const msgEl=document.getElementById('wsubmit-msg');
+  const name=nameEl.value.trim();
+  if(!name){nameEl.focus();msgEl.textContent='Enter your name 👆';return;}
+  const btn=document.getElementById('submit-score-btn');
+  btn.disabled=true;btn.textContent='Saving…';
+  S.playerName=name;
+  const grade=getGrade(S.score);
+  const elapsed=Math.round((Date.now()-S.start)/1000);
+  try{
+    await sbFetch('/rest/v1/scores','POST',{
+      name,puzzle_id:S.puzzle.id,
+      puzzle_label:`${S.puzzle.team} ${S.puzzle.year}`,
+      score:S.score,grade:grade.letter,
+      time_seconds:elapsed,
+      hints_used:S.natDone.size+Array.from(S.lettersRevealed.values()).reduce((a,b)=>a+b,0),
+      group_id:S.groupId||null
+    });
+  }catch(e){console.error('Submit:',e);}
+  showResultsScreen();
+}
+
+document.getElementById('skip-name-btn').addEventListener('click',()=>{
+  S.playerName='';showResultsScreen();
+});
+
 // ── LEADERBOARD (Supabase) ──
 const SB_URL='https://ecjrsjxvdtmvtgygnwxd.supabase.co';
 const SB_KEY='sb_publishable_Jp_tM72yApuwyCSS-A5YNg_9C6meVX1';
@@ -1481,7 +1567,8 @@ async function submitScore(){
       score:S.score,
       grade:grade.letter,
       time_seconds:Math.round((Date.now()-S.start)/1000),
-      hints_used:S.natDone.size+Array.from(S.lettersRevealed.values()).reduce((a,b)=>a+b,0)
+      hints_used:S.natDone.size+Array.from(S.lettersRevealed.values()).reduce((a,b)=>a+b,0),
+      group_id:S.groupId||null
     });
     msgEl.textContent='✓ Score on the board!';
     btn.textContent='✓ Submitted';
@@ -1495,6 +1582,50 @@ async function submitScore(){
 
 let lbData=[], lbMode='overall';
 
+
+function renderGroupLb(data,groupId){
+  const grouped=data.filter(e=>e.group_id===groupId);
+  document.getElementById('lb-tabs').style.display='none';
+  const list=document.getElementById('lb-list');
+  list.innerHTML='';
+  if(!grouped.length){
+    list.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted);font-size:0.85rem;line-height:1.6">Nobody else in the group has played yet!<br><br>Share the challenge link to get them playing 👊</div>';
+    return;
+  }
+  const best=new Map();
+  grouped.forEach(e=>{
+    const k=e.name;
+    if(!best.has(k)||e.score>best.get(k).score||(e.score===best.get(k).score&&(e.time_seconds||9999)<(best.get(k).time_seconds||9999)))
+      best.set(k,e);
+  });
+  const sorted=[...best.values()].sort((a,b)=>b.score-a.score||((a.time_seconds||9999)-(b.time_seconds||9999)));
+  const medals=['🥇','🥈','🥉'];
+  const header=document.createElement('div');
+  header.style.cssText='font-family:var(--fh);font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;padding:8px 4px 12px';
+  header.textContent=`Group · ${grouped[0]?.puzzle_label||''} · ${sorted.length} player${sorted.length!==1?'s':''}`;
+  list.appendChild(header);
+  sorted.forEach((e,idx)=>{
+    const row=document.createElement('div');
+    row.className='lb-row';
+    const mins=Math.floor((e.time_seconds||0)/60),secs=(e.time_seconds||0)%60;
+    const tStr=mins>0?`${mins}m ${secs}s`:`${secs}s`;
+    const isMe=e.name===(S.playerName||'');
+    row.innerHTML=`
+      <div class="lb-rank">${medals[idx]||idx+1}</div>
+      <div class="lb-info">
+        <div class="lb-name" style="${isMe?'color:var(--lime);':''}">${e.name}${isMe?' 👈':''}</div>
+        <div class="lb-meta">⏱ ${tStr} · Grade ${e.grade}</div>
+      </div>
+      <div class="lb-score">${e.score.toLocaleString()}</div>`;
+    list.appendChild(row);
+  });
+}
+
+function updateGroupTab(){
+  const btn=document.getElementById('tab-group');
+  if(btn)btn.style.display=S.groupId?'flex':'none';
+}
+
 async function openLeaderboard(){
   const overlay=document.getElementById('lb-overlay');
   overlay.classList.add('show');
@@ -1506,10 +1637,18 @@ async function openLeaderboard(){
 
   try{
     lbData=await sbFetch('/rest/v1/scores?select=*&order=score.desc&limit=500');
-    lbMode='lineup';
-    document.getElementById('tab-lineup').classList.add('active');
-    document.getElementById('tab-overall').classList.remove('active');
-    showLineupTabs();
+    if(S.groupId){
+      lbMode='group';
+      document.getElementById('tab-group').classList.add('active');
+      document.getElementById('tab-lineup').classList.remove('active');
+      document.getElementById('tab-overall').classList.remove('active');
+      renderGroupLb(lbData,S.groupId);
+    } else {
+      lbMode='lineup';
+      document.getElementById('tab-lineup').classList.add('active');
+      document.getElementById('tab-overall').classList.remove('active');
+      showLineupTabs();
+    }
   }catch(e){
     console.error('Leaderboard error:',e);
     document.getElementById('lb-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:0.82rem;line-height:1.5">Could not load scores — check connection</div>';
@@ -1546,7 +1685,7 @@ function renderByLineup(puzzleId){
     const k=`${e.name}:${e.puzzle_id}`;
     if(!best.has(k)||e.score>best.get(k).score) best.set(k,e);
   });
-  const sorted=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,25);
+  const sorted=[...best.values()].sort((a,b)=>b.score-a.score||((a.time_seconds||9999)-(b.time_seconds||9999))).slice(0,25);
   renderRows(sorted,
     e=>{const m=Math.floor(e.time_seconds/60),s=e.time_seconds%60;return (m>0?`${m}m ${s}s`:`${s}s`)+` · Grade ${e.grade}`;},
     e=>e.score.toLocaleString()
@@ -1594,6 +1733,14 @@ function showLineupTabs(){
   else renderByLineup(null);
 }
 
+document.getElementById('tab-group').addEventListener('click',()=>{
+  lbMode='group';
+  document.getElementById('tab-group').classList.add('active');
+  document.getElementById('tab-lineup').classList.remove('active');
+  document.getElementById('tab-overall').classList.remove('active');
+  document.getElementById('lb-tabs').style.display='none';
+  renderGroupLb(lbData,S.groupId);
+});
 document.getElementById('tab-overall').addEventListener('click',()=>{
   lbMode='overall';
   document.getElementById('tab-overall').classList.add('active');
@@ -1609,14 +1756,18 @@ document.getElementById('tab-lineup').addEventListener('click',()=>{
 
 document.getElementById('submit-score-btn').addEventListener('click',submitScore);
 document.getElementById('wname-input').addEventListener('keydown',e=>{if(e.key==='Enter')submitScore();});
-document.getElementById('view-lb-btn').addEventListener('click',openLeaderboard);
+document.getElementById('view-lb-btn').addEventListener('click',()=>{updateGroupTab();openLeaderboard();});
 document.getElementById('lb-close').addEventListener('click',()=>document.getElementById('lb-overlay').classList.remove('show'));
 
 // ── CHALLENGE LINK ──
+function makeGroupId(){return Math.random().toString(36).slice(2,8).toUpperCase();}
+
 function buildChallengeUrl(){
-  const name=document.getElementById('wname-input').value.trim()||'Someone';
+  const name=S.playerName||document.getElementById('wname-input').value.trim()||'Someone';
   const grade=getGrade(S.score);
-  const params=new URLSearchParams({c:S.puzzle.id,s:S.score,g:grade.letter,n:name});
+  const elapsed=Math.round((Date.now()-S.start)/1000);
+  if(!S.groupId)S.groupId=makeGroupId();
+  const params=new URLSearchParams({c:S.puzzle.id,s:S.score,g:grade.letter,n:encodeURIComponent(name),t:elapsed,grp:S.groupId});
   return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
 }
 
@@ -1653,24 +1804,32 @@ function checkChallengeParam(){
   const p=new URLSearchParams(window.location.search);
   const cId=p.get('c'),cScore=p.get('s'),cGrade=p.get('g'),cName=p.get('n');
   if(!cId||!cScore)return null;
-  return {puzzleId:parseInt(cId),score:parseInt(cScore),grade:cGrade,name:decodeURIComponent(cName||'Someone')};
+  return {puzzleId:parseInt(cId),score:parseInt(cScore),grade:cGrade,name:decodeURIComponent(cName||'Someone'),time:parseInt(p.get('t')||0),groupId:p.get('grp')||null};
 }
 
 function showChallengeBanner(challenge){
   const banner=document.getElementById('challenge-banner');
   if(!banner)return;
-  document.getElementById('cb-name').textContent=`⚔️ ${challenge.name} scored ${challenge.score.toLocaleString()} pts (Grade ${challenge.grade}) — beat it!`;
-  document.getElementById('cb-score').textContent=`${S.puzzle.team} ${S.puzzle.year}`;
+  const cM=Math.floor((challenge.time||0)/60),cS=(challenge.time||0)%60;
+  const cTimeStr=challenge.time?(cM>0?`${cM}m ${cS}s`:`${cS}s`):'';
+  document.getElementById('cb-name').textContent=`⚔️ ${challenge.name} scored ${challenge.score.toLocaleString()}pts (Grade ${challenge.grade})${cTimeStr?' in '+cTimeStr:''} — think you can beat that? 😏`;
+  document.getElementById('cb-score').textContent=`${S.puzzle.team} · ${S.puzzle.year} · tap 🏅 Board to see the group`;
   banner.style.display='block';
 }
 
-function checkChallengeWin(finalScore,challenge){
+function checkChallengeWin(finalScore,elapsed,challenge){
   if(!challenge)return null;
-  const won=finalScore>challenge.score;
-  const diff=Math.abs(finalScore-challenge.score);
-  return won
-    ?`🎉 You beat ${challenge.name}! +${diff.toLocaleString()} pts`
-    :`😬 ${challenge.name} beat you by ${diff.toLocaleString()} pts — challenge back?`;
+  const scoreDiff=finalScore-challenge.score;
+  const timeDiff=(challenge.time||0)-elapsed;
+  const cM=Math.floor((challenge.time||0)/60),cS=(challenge.time||0)%60;
+  const cT=challenge.time?(cM>0?`${cM}m ${cS}s`:`${cS}s`):'';
+  const myM=Math.floor(elapsed/60),myS=elapsed%60;
+  const myT=myM>0?`${myM}m ${myS}s`:`${elapsed}s`;
+  if(scoreDiff>0) return `🎉 You beat ${challenge.name} by ${scoreDiff.toLocaleString()} pts!${timeDiff>0?' And you were faster 🔥':''}`;
+  if(scoreDiff===0&&timeDiff>0) return `⏱ Same score but you were ${Math.abs(timeDiff)}s faster than ${challenge.name}! 🎉`;
+  if(scoreDiff===0&&timeDiff===0) return `🤝 Dead heat with ${challenge.name}! Rematch?`;
+  if(scoreDiff===0) return `😬 Same score as ${challenge.name} but they were faster (${cT} vs ${myT}) — rematch?`;
+  return `😬 ${challenge.name} beats you by ${Math.abs(scoreDiff)} pts — ${cT?cT+' vs your '+myT+'.':''} Challenge back?`;
 }
 
 document.getElementById('challenge-btn').addEventListener('click',generateChallenge);
@@ -1706,7 +1865,7 @@ function soundHint(){playTone(440,0.08,'sine',0.06);}
 const challengeParam=checkChallengeParam();
 if(challengeParam){
   const puzzle=PUZZLES.find(p=>p.id===challengeParam.puzzleId);
-  if(puzzle){hidePicker();init(puzzle);setTimeout(()=>showChallengeBanner(challengeParam),200);}
+  if(puzzle){hidePicker();init(puzzle);if(challengeParam.groupId)setTimeout(()=>{S.groupId=challengeParam.groupId;},50);setTimeout(()=>showChallengeBanner(challengeParam),200);}
   else showPicker();
 } else {
   showPicker();
