@@ -387,7 +387,7 @@ header{
 #picker.hidden{display:none}
 #picker-header{padding:12px 14px 8px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
 #picker-tagline-row{padding:6px 14px 2px;font-size:0.72rem;color:var(--muted)}
-#picker-logo{font-family:var(--fh);font-weight:800;line-height:1}
+#picker-logo{font-family:var(--fh);font-weight:800;line-height:1;display:block}
 #picker-logo .logo-legendary{font-size:1.5rem;color:var(--white);letter-spacing:-0.3px;display:block}
 #picker-logo .logo-xi{font-size:2.4rem;color:var(--lime);letter-spacing:-1px;display:block;margin-top:-3px}
 #picker-tagline{font-size:0.7rem;color:var(--muted);margin-top:2px}
@@ -2139,7 +2139,6 @@ function generateShareCard(){
   // Crown + Logo top left
   ctx.fillStyle = lime;
   ctx.font = 'bold 52px sans-serif';
-  ctx.fillText('👑', 60, 100);
   ctx.fillStyle = white;
   ctx.font = 'bold 56px sans-serif';
   ctx.fillText('Legendary', 60, 160);
@@ -2223,52 +2222,67 @@ function generateShareCard(){
   ctx.font = '42px sans-serif';
   ctx.fillText('⏱ '+tStr, 1020, gradeY + 140);
 
-  // Grade label
+  // Grade label — truncate if too long
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.font = '36px sans-serif';
+  ctx.font = '32px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(grade.label, 540, gradeY + 240);
+  let labelText = grade.label;
+  const maxW = 900;
+  if(ctx.measureText(labelText).width > maxW){
+    while(ctx.measureText(labelText+'…').width > maxW && labelText.length > 10){
+      labelText = labelText.slice(0,-1);
+    }
+    labelText += '…';
+  }
+  ctx.fillText('"'+labelText+'"', 540, gradeY + 230);
 
   // CTA
   ctx.fillStyle = white;
   ctx.font = 'bold 44px sans-serif';
-  ctx.fillText('Can you beat that? 👊', 540, gradeY + 320);
+  ctx.fillText('Can you beat that? 👊', 540, gradeY + 300);
 
-  // URL bottom
+  // URL bottom — always fixed at bottom
   ctx.fillStyle = muted;
-  ctx.font = '34px sans-serif';
-  ctx.fillText('legendary-xi.vercel.app', 540, 1040);
+  ctx.font = '32px sans-serif';
+  ctx.fillText('legendary-xi.vercel.app', 540, 1032);
 
   // Lime bottom bar
   ctx.fillStyle = lime;
   ctx.fillRect(0, 1072, 1080, 8);
 
-  // Convert to blob and share
-  canvas.toBlob(async (blob)=>{
-    const name = S.playerName||'result';
-    const file = new File([blob], `legendary-xi-${name}.png`, {type:'image/png'});
+  // Use dataURL approach - keeps everything synchronous within gesture
+  try{
+    const dataUrl = canvas.toDataURL('image/png');
+    // Convert dataURL to blob synchronously
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--) u8arr[n] = bstr.charCodeAt(n);
+    const blob = new Blob([u8arr], {type:mime});
+    const file = new File([blob], 'legendary-xi.png', {type:'image/png'});
+
     if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-      try{
-        await navigator.share({
-          files:[file],
-          title:'Legendary XI',
-          text:`I got Grade ${grade.letter} on ${S.puzzle.team} ${S.puzzle.year}! Can you beat it?`
-        });
-      }catch(e){
-        // Fallback: download the image
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href=url; a.download=`legendary-xi.png`; a.click();
-        URL.revokeObjectURL(url);
-      }
+      navigator.share({
+        files:[file],
+        title:'Legendary XI — Grade '+grade.letter,
+        text:'I got Grade '+grade.letter+' on '+S.puzzle.team+' '+S.puzzle.year+'! Can you beat it? legendary-xi.vercel.app'
+      }).catch(()=>{
+        // Cancelled or failed — download instead
+        const link=document.createElement('a');
+        link.href=dataUrl; link.download='legendary-xi.png'; link.click();
+      });
     } else {
-      // Download fallback
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href=url; a.download=`legendary-xi.png`; a.click();
-      URL.revokeObjectURL(url);
+      // Download fallback for desktop/unsupported browsers
+      const link=document.createElement('a');
+      link.href=dataUrl; link.download='legendary-xi.png'; link.click();
+      toast('Image downloaded!','ok');
     }
-  },'image/png');
+  }catch(err){
+    console.error('Share card error:',err);
+    toast('Could not generate card','bad');
+  }
 }
 
 async function generateChallenge(){
