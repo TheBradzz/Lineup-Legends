@@ -195,8 +195,8 @@ header{
   color:var(--lime);line-height:1.2;white-space:nowrap;display:none;
 }
 .tag-clue{
-  font-family:var(--fb);font-size:0.76rem;font-weight:600;
-  color:rgba(255,255,255,0.95);line-height:1.2;white-space:nowrap;display:none;
+  font-family:var(--fb);font-size:0.72rem;font-weight:600;
+  color:rgba(181,255,77,0.85);line-height:1.2;white-space:nowrap;display:none;
 }
 
 /* ── BOTTOM CHROME — input + hints, flex-shrink:0 so keyboard doesn't move pitch ── */
@@ -466,6 +466,13 @@ header{
   <header>
     <div class="logo"><span class="logo-legendary">Legendary</span><span class="logo-xi">XI</span></div>
     <button id="back-btn">⚽ Lineups</button>
+    <div id="mode-toggle-wrap" style="display:none;align-items:center;gap:6px">
+      <span id="mode-label" style="font-family:var(--fh);font-size:0.7rem;font-weight:700;color:var(--muted)">HARD</span>
+      <div id="mode-toggle" role="switch" aria-checked="false" style="width:40px;height:22px;border-radius:11px;background:rgba(255,255,255,0.15);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0">
+        <div id="mode-knob" style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>
+      </div>
+      <span style="font-family:var(--fh);font-size:0.7rem;font-weight:700;color:var(--lime)">EASY</span>
+    </div>
   </header>
   <div id="scorebar">
     <div id="score-block">
@@ -827,6 +834,136 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"RW","name":"Nicolas Anelka","nat":"France","club":"Chelsea"},
   {"pos":"ST","name":"Didier Drogba","nat":"Ivory Coast","club":"Chelsea"},
   {"pos":"LW","name":"Florent Malouda","nat":"France","club":"Chelsea"}
+]},
+{"id":39,"team":"England","competition":"International","match":"Euro 2000 vs Germany (1-0, Shearer)","formation":"442","year":2000,"difficulty":4,"players":[
+  {"pos":"GK","name":"David Seaman","nat":"England","club":"Arsenal"},
+  {"pos":"RB","name":"Gary Neville","nat":"England","club":"Manchester United"},
+  {"pos":"CB","name":"Sol Campbell","nat":"England","club":"Tottenham"},
+  {"pos":"CB","name":"Martin Keown","nat":"England","club":"Arsenal"},
+  {"pos":"LB","name":"Phil Neville","nat":"England","club":"Manchester United"},
+  {"pos":"RM","name":"David Beckham","nat":"England","club":"Manchester United"},
+  {"pos":"CM","name":"Paul Scholes","nat":"England","club":"Manchester United"},
+  {"pos":"CM","name":"Paul Ince","nat":"England","club":"Middlesbrough"},
+  {"pos":"LM","name":"Dennis Wise","nat":"England","club":"Chelsea"},
+  {"pos":"ST","name":"Alan Shearer","nat":"England","club":"Newcastle United"},
+  {"pos":"ST","name":"Michael Owen","nat":"England","club":"Liverpool"}
+]},
+{"id":40,"team":"England","competition":"International","match":"World Cup Qualifier vs Germany (5-1 in Munich)","formation":"442","year":2001,"difficulty":3,"players":[
+  {"pos":"GK","name":"David Seaman","nat":"England","club":"Arsenal"},
+  {"pos":"RB","name":"Gary Neville","nat":"England","club":"Manchester United"},
+  {"pos":"CB","name":"Rio Ferdinand","nat":"England","club":"Leeds United"},
+  {"pos":"CB","name":"Sol Campbell","nat":"England","club":"Arsenal"},
+  {"pos":"LB","name":"Ashley Cole","nat":"England","club":"Arsenal"},
+  {"pos":"RM","name":"David Beckham","nat":"England","club":"Manchester United"},
+  {"pos":"CM","name":"Steven Gerrard","nat":"England","club":"Liverpool"},
+  {"pos":"CM","name":"Paul Scholes","nat":"England","club":"Manchester United"},
+  {"pos":"LM","name":"Nicky Barmby","nat":"England","club":"Liverpool"},
+  {"pos":"ST","name":"Michael Owen","nat":"England","club":"Liverpool"},
+  {"pos":"ST","name":"Emile Heskey","nat":"England","club":"Liverpool"}
+]},
+{"id":41,"team":"England","competition":"International","match":"Le Tournoi vs Brazil (Romario goal, England win tournament)","formation":"352","year":1997,"difficulty":5,"players":[
+  {"pos":"GK","name":"David Seaman","nat":"England","club":"Arsenal"},
+  {"pos":"CB","name":"Sol Campbell","nat":"England","club":"Tottenham"},
+  {"pos":"CB","name":"Martin Keown","nat":"England","club":"Arsenal"},
+  {"pos":"CB","name":"Gareth Southgate","nat":"England","club":"Aston Villa"},
+  {"pos":"RWB","name":"Phil Neville","nat":"England","club":"Manchester United"},
+  {"pos":"LWB","name":"Graeme Le Saux","nat":"England","club":"Blackburn Rovers"},
+  {"pos":"CM","name":"Paul Gascoigne","nat":"England","club":"Rangers"},
+  {"pos":"CM","name":"Paul Ince","nat":"England","club":"Inter Milan"},
+  {"pos":"CM","name":"Paul Scholes","nat":"England","club":"Manchester United"},
+  {"pos":"ST","name":"Alan Shearer","nat":"England","club":"Newcastle United"},
+  {"pos":"ST","name":"Teddy Sheringham","nat":"England","club":"Manchester United"}
+]},
+{"id":42,"team":"Leeds United","competition":"League One","match":"League One Promotion Winners vs Bristol Rovers (Beckford winner)","formation":"442","year":2010,"difficulty":4,"players":[
+  {"pos":"GK","name":"Casper Ankergren","nat":"Denmark","club":"Leeds United"},
+  {"pos":"RB","name":"Jason Crowe","nat":"England","club":"Leeds United"},
+  {"pos":"CB","name":"Richard Naylor","nat":"England","club":"Leeds United"},
+  {"pos":"CB","name":"Patrick Kisnorbo","nat":"Australia","club":"Leeds United"},
+  {"pos":"LB","name":"Andrew Hughes","nat":"Wales","club":"Leeds United"},
+  {"pos":"RM","name":"Robert Snodgrass","nat":"Scotland","club":"Leeds United"},
+  {"pos":"CM","name":"Neil Kilkenny","nat":"Australia","club":"Leeds United"},
+  {"pos":"CM","name":"Michael Doyle","nat":"Ireland","club":"Leeds United"},
+  {"pos":"LM","name":"Bradley Johnson","nat":"England","club":"Leeds United"},
+  {"pos":"ST","name":"Jermaine Beckford","nat":"England","club":"Leeds United"},
+  {"pos":"ST","name":"Luciano Becchio","nat":"Argentina","club":"Leeds United"}
+]},
+{"id":43,"team":"Leeds United","competition":"Premier League","match":"Bielsa Final Game vs Tottenham (4-0 loss, Bielsa sacked 2 days later)","formation":"433","year":2022,"difficulty":3,"players":[
+  {"pos":"GK","name":"Illan Meslier","nat":"France","club":"Leeds United"},
+  {"pos":"RB","name":"Luke Ayling","nat":"England","club":"Leeds United"},
+  {"pos":"CB","name":"Pascal Struijk","nat":"Netherlands","club":"Leeds United"},
+  {"pos":"CB","name":"Diego Llorente","nat":"Spain","club":"Leeds United"},
+  {"pos":"LB","name":"Junior Firpo","nat":"Dominican Republic","club":"Leeds United"},
+  {"pos":"CM","name":"Robin Koch","nat":"Germany","club":"Leeds United"},
+  {"pos":"CM","name":"Adam Forshaw","nat":"England","club":"Leeds United"},
+  {"pos":"CM","name":"Stuart Dallas","nat":"Northern Ireland","club":"Leeds United"},
+  {"pos":"RW","name":"Raphinha","nat":"Brazil","club":"Leeds United"},
+  {"pos":"ST","name":"Daniel James","nat":"Wales","club":"Leeds United"},
+  {"pos":"LW","name":"Jack Harrison","nat":"England","club":"Leeds United"}
+]},
+{"id":44,"team":"PFA Team of the Season","competition":"Premier League","match":"PFA Premier League Team of the Year 2024-25","formation":"433","year":2025,"difficulty":2,"players":[
+  {"pos":"GK","name":"Matz Sels","nat":"Belgium","club":"Nottingham Forest"},
+  {"pos":"RB","name":"William Saliba","nat":"France","club":"Arsenal"},
+  {"pos":"CB","name":"Virgil van Dijk","nat":"Netherlands","club":"Liverpool"},
+  {"pos":"CB","name":"Gabriel Magalhaes","nat":"Brazil","club":"Arsenal"},
+  {"pos":"LB","name":"Milos Kerkez","nat":"Hungary","club":"Bournemouth"},
+  {"pos":"CM","name":"Declan Rice","nat":"England","club":"Arsenal"},
+  {"pos":"CM","name":"Ryan Gravenberch","nat":"Netherlands","club":"Liverpool"},
+  {"pos":"CM","name":"Alexis Mac Allister","nat":"Argentina","club":"Liverpool"},
+  {"pos":"RW","name":"Mohamed Salah","nat":"Egypt","club":"Liverpool"},
+  {"pos":"ST","name":"Alexander Isak","nat":"Sweden","club":"Newcastle United"},
+  {"pos":"LW","name":"Chris Wood","nat":"New Zealand","club":"Nottingham Forest"}
+]},
+{"id":45,"team":"PFA Team of the Season","competition":"Premier League","match":"PFA Premier League Team of the Year 2023-24","formation":"433","year":2024,"difficulty":2,"players":[
+  {"pos":"GK","name":"David Raya","nat":"Spain","club":"Arsenal"},
+  {"pos":"RB","name":"Kyle Walker","nat":"England","club":"Manchester City"},
+  {"pos":"CB","name":"William Saliba","nat":"France","club":"Arsenal"},
+  {"pos":"CB","name":"Gabriel Magalhaes","nat":"Brazil","club":"Arsenal"},
+  {"pos":"LB","name":"Virgil van Dijk","nat":"Netherlands","club":"Liverpool"},
+  {"pos":"CM","name":"Rodri","nat":"Spain","club":"Manchester City"},
+  {"pos":"CM","name":"Martin Odegaard","nat":"Norway","club":"Arsenal"},
+  {"pos":"CM","name":"Declan Rice","nat":"England","club":"Arsenal"},
+  {"pos":"RW","name":"Phil Foden","nat":"England","club":"Manchester City"},
+  {"pos":"ST","name":"Erling Haaland","nat":"Norway","club":"Manchester City"},
+  {"pos":"LW","name":"Ollie Watkins","nat":"England","club":"Aston Villa"}
+]},
+{"id":46,"team":"PFA Team of the Season","competition":"Premier League","match":"PFA Premier League Team of the Year 2022-23","formation":"433","year":2023,"difficulty":2,"players":[
+  {"pos":"GK","name":"Aaron Ramsdale","nat":"England","club":"Arsenal"},
+  {"pos":"RB","name":"Kieran Trippier","nat":"England","club":"Newcastle United"},
+  {"pos":"CB","name":"William Saliba","nat":"France","club":"Arsenal"},
+  {"pos":"CB","name":"John Stones","nat":"England","club":"Manchester City"},
+  {"pos":"LB","name":"Ruben Dias","nat":"Portugal","club":"Manchester City"},
+  {"pos":"CM","name":"Rodri","nat":"Spain","club":"Manchester City"},
+  {"pos":"CM","name":"Kevin De Bruyne","nat":"Belgium","club":"Manchester City"},
+  {"pos":"CM","name":"Martin Odegaard","nat":"Norway","club":"Arsenal"},
+  {"pos":"RW","name":"Bukayo Saka","nat":"England","club":"Arsenal"},
+  {"pos":"ST","name":"Erling Haaland","nat":"Norway","club":"Manchester City"},
+  {"pos":"LW","name":"Harry Kane","nat":"England","club":"Tottenham"}
+]},
+{"id":47,"team":"PFA Team of the Season","competition":"Premier League","match":"PFA Premier League Team of the Year 2021-22","formation":"433","year":2022,"difficulty":3,"players":[
+  {"pos":"GK","name":"Alisson","nat":"Brazil","club":"Liverpool"},
+  {"pos":"RB","name":"Trent Alexander-Arnold","nat":"England","club":"Liverpool"},
+  {"pos":"CB","name":"Virgil van Dijk","nat":"Netherlands","club":"Liverpool"},
+  {"pos":"CB","name":"Antonio Rudiger","nat":"Germany","club":"Chelsea"},
+  {"pos":"LB","name":"Joao Cancelo","nat":"Portugal","club":"Manchester City"},
+  {"pos":"CM","name":"Kevin De Bruyne","nat":"Belgium","club":"Manchester City"},
+  {"pos":"CM","name":"Thiago Alcantara","nat":"Spain","club":"Liverpool"},
+  {"pos":"CM","name":"Bernardo Silva","nat":"Portugal","club":"Manchester City"},
+  {"pos":"RW","name":"Mohamed Salah","nat":"Egypt","club":"Liverpool"},
+  {"pos":"ST","name":"Cristiano Ronaldo","nat":"Portugal","club":"Manchester United"},
+  {"pos":"LW","name":"Sadio Mane","nat":"Senegal","club":"Liverpool"}
+]},
+{"id":48,"team":"PFA Team of the Season","competition":"Premier League","match":"PFA Premier League Team of the Year 2020-21","formation":"433","year":2021,"difficulty":3,"players":[
+  {"pos":"GK","name":"Ederson","nat":"Brazil","club":"Manchester City"},
+  {"pos":"RB","name":"Joao Cancelo","nat":"Portugal","club":"Manchester City"},
+  {"pos":"CB","name":"John Stones","nat":"England","club":"Manchester City"},
+  {"pos":"CB","name":"Ruben Dias","nat":"Portugal","club":"Manchester City"},
+  {"pos":"LB","name":"Luke Shaw","nat":"England","club":"Manchester United"},
+  {"pos":"CM","name":"Kevin De Bruyne","nat":"Belgium","club":"Manchester City"},
+  {"pos":"CM","name":"Ilkay Gundogan","nat":"Germany","club":"Manchester City"},
+  {"pos":"CM","name":"Bruno Fernandes","nat":"Portugal","club":"Manchester United"},
+  {"pos":"RW","name":"Mohamed Salah","nat":"Egypt","club":"Liverpool"},
+  {"pos":"ST","name":"Harry Kane","nat":"England","club":"Tottenham"},
+  {"pos":"LW","name":"Son Heung-min","nat":"South Korea","club":"Tottenham"}
 ]}];
 
 const FLAGS={"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Republic of Ireland":"🇮🇪","France":"🇫🇷","Spain":"🇪🇸","Germany":"🇩🇪","Italy":"🇮🇹","Netherlands":"🇳🇱","Portugal":"🇵🇹","Brazil":"🇧🇷","Argentina":"🇦🇷","Australia":"🇦🇺","Norway":"🇳🇴","Sweden":"🇸🇪","Denmark":"🇩🇰","Finland":"🇫🇮","Poland":"🇵🇱","Belgium":"🇧🇪","Ivory Coast":"🇨🇮","Cameroon":"🇨🇲","Mali":"🇲🇱","Ghana":"🇬🇭","Algeria":"🇩🇿","Nigeria":"🇳🇬","Japan":"🇯🇵","Czech Republic":"🇨🇿","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹","Austria":"🇦🇹","Morocco":"🇲🇦","Senegal":"🇸🇳","South Korea":"🇰🇷","Croatia":"🇭🇷","Switzerland":"🇨🇭"};
@@ -969,6 +1106,7 @@ function hintLabel(p,puzzle){
 
 // ── STATE ──
 let S={},usedIds=[],scoreTimer=null;
+let easyMode=localStorage.getItem('lxi_easymode')==='true';
 let lbData=[],lbMode='overall';
 // ── SCORING ──
 // Each player worth 100 pts, reduced by hints:
@@ -1130,7 +1268,46 @@ function init(puzzle){
   buildPitch();
   renderUI();
   startTimer();
+  updateModeToggle();
 }
+
+function isTotsPuzzle(){
+  return S.puzzle && S.puzzle.team === 'PFA Team of the Season';
+}
+
+function updateModeToggle(){
+  const wrap=document.getElementById('mode-toggle-wrap');
+  const toggle=document.getElementById('mode-toggle');
+  const knob=document.getElementById('mode-knob');
+  const label=document.getElementById('mode-label');
+  // Only show toggle on TOTS puzzles
+  if(wrap) wrap.style.display=isTotsPuzzle()?'flex':'none';
+  if(!toggle)return;
+  if(easyMode){
+    toggle.style.background='rgba(181,255,77,0.4)';
+    toggle.style.borderColor='rgba(181,255,77,0.6)';
+    if(knob) knob.style.left='21px';
+    if(label) label.style.color='var(--muted)';
+    toggle.setAttribute('aria-checked','true');
+  } else {
+    toggle.style.background='rgba(255,255,255,0.15)';
+    if(knob) knob.style.left='3px';
+    if(label) label.style.color='var(--muted)';
+    toggle.setAttribute('aria-checked','false');
+  }
+}
+// updateModeToggle called from init
+document.getElementById('mode-toggle').addEventListener('click',()=>{
+  easyMode=!easyMode;
+  localStorage.setItem('lxi_easymode',String(easyMode));
+  updateModeToggle();
+  buildPitch();
+  // Clear all club hints when switching off
+  if(!easyMode){
+    document.querySelectorAll('[id^="tclue-"]').forEach(el=>{el.textContent='';el.style.display='none';});
+  }
+  toast(easyMode?'Tap a dot to see their club ⭐':'Hard mode — no hints 🔥','ok');
+});
 
 function buildPitch(){
   const pitch=document.getElementById('pitch');
@@ -1181,6 +1358,19 @@ function setActive(i){
   S.puzzle.players.forEach((_,j)=>{
     const dot=document.getElementById(`dot-${j}`);
     if(dot) dot.classList.toggle('active', j===i);
+    // Easy mode: show club name on tapped dot only
+    if(easyMode&&isTotsPuzzle()){
+      const cl=document.getElementById('tclue-'+j);
+      if(cl&&!S.solved.has(j)){
+        if(j===i){
+          cl.textContent=S.puzzle.players[j].club||'';
+          cl.style.display='block';
+        } else {
+          cl.textContent='';
+          cl.style.display='none';
+        }
+      }
+    }
   });
   // Enable hint buttons now a player is selected
   document.getElementById('btn-nat').disabled=false;
@@ -1233,6 +1423,8 @@ function renderUI(){
 
 // Award points and solve — called on correct guess
 function awardAndSolve(i,name){
+  // Hide easy-mode club hint when solved
+  const cl=document.getElementById('tclue-'+i);if(cl){cl.textContent='';cl.style.display='none';}
   const pts=S.playerPotential[i]||0; // can be negative for reveals
   S.score+=pts;
   S.score=Math.max(-500,S.score); // floor at -500
