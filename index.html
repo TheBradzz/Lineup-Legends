@@ -3,29 +3,29 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Lineup Legends</title>
+<title>Legendary XI</title>
 
 <!-- Open Graph — controls preview in WhatsApp, iMessage, Twitter, Facebook -->
-<meta property="og:title" content="⚽ Lineup Legends — Can you guess the lineup?"/>
-<meta property="og:description" content="Guess the famous football lineup. How good is your football knowledge? Challenge your mates and see who knows their football."/>
-<meta property="og:url" content="https://lineuplegends.netlify.app"/>
+<meta property="og:title" content="⚽ Legendary XI — Can you guess the lineup?"/>
+<meta property="og:description" content="Guess the legendary football lineup. How good is your football knowledge? Challenge your mates and see who knows their football."/>
+<meta property="og:url" content="https://lineup-legends-tawny.vercel.app"/>
 <meta property="og:type" content="website"/>
-<meta property="og:image" content="https://lineuplegends.netlify.app/og-image.png"/>
+<meta property="og:image" content="https://lineup-legends-tawny.vercel.app/og-image.png"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
-<meta property="og:site_name" content="Lineup Legends"/>
+<meta property="og:site_name" content="Legendary XI"/>
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="⚽ Lineup Legends — Can you guess the lineup?"/>
-<meta name="twitter:description" content="Guess the famous football lineup. Challenge your mates and see who knows their football."/>
-<meta name="twitter:image" content="https://lineuplegends.netlify.app/og-image.png"/>
+<meta name="twitter:title" content="⚽ Legendary XI — Can you guess the lineup?"/>
+<meta name="twitter:description" content="Guess the legendary football lineup. Challenge your mates and see who knows their football."/>
+<meta name="twitter:image" content="https://lineup-legends-tawny.vercel.app/og-image.png"/>
 
 <!-- Mobile app feel -->
 <meta name="theme-color" content="#0d1b2a"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Lineup Legends"/>
+<meta name="apple-mobile-web-app-title" content="Legendary XI"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -409,7 +409,7 @@ header{
 <body>
 <div id="picker">
   <div id="picker-header">
-    <div id="picker-logo">Lineup<span>Legends</span></div>
+    <div id="picker-logo">Legendary<span>XI</span></div>
     <div style="display:flex;gap:8px;align-items:center">
       <button id="picker-lb-btn">🏅 Leaderboard</button>
       <button id="picker-share">📤 Share</button>
@@ -422,7 +422,7 @@ header{
 <div id="score-flash"></div>
 <div id="app">
   <header>
-    <div class="logo">Lineup<span>Legends</span></div>
+    <div class="logo">Legendary<span>XI</span></div>
     <button id="back-btn">⚽ Lineups</button>
   </header>
   <div id="scorebar">
@@ -508,7 +508,7 @@ header{
 <div id="lb-overlay">
   <div id="lb-card">
     <div id="lb-header">
-      <div id="lb-title">🏅 Leaderboard</div>
+      <div id="lb-title">🏅 Legendary XI</div>
       <button id="lb-close">✕</button>
     </div>
     <!-- Mode tabs: Overall vs Per Lineup -->
@@ -1346,14 +1346,14 @@ function showWin(){
   const totalHints = S.natDone.size + Array.from(S.lettersRevealed.values()).reduce((a,b)=>a+b,0) + (S.revealedPlayers?S.revealedPlayers.size:0);
 
   const shareText =
-`⚽ Lineup Legends #${S.puzzle.id}
+`⚽ Legendary XI #${S.puzzle.id}
 ${S.puzzle.team} ${S.puzzle.year} (${fmt})
 
 ${flatGrid}
 
 Grade ${grade.letter} · ${finalScore.toLocaleString()}pts · ${timeStr}
 
-lineuplegends.netlify.app`;
+lineup-legends-tawny.vercel.app`;
 
   document.getElementById('wshare-text').textContent=shareText;
 
@@ -1530,8 +1530,8 @@ document.getElementById('picker-lb-btn').addEventListener('click',()=>{
 
 document.getElementById('picker-share').addEventListener('click',()=>{
   const url=window.location.href.split('?')[0];
-  const text='⚽ Lineup Legends — can you guess the famous football lineups?\nHow good is your football knowledge?\n'+url;
-  if(navigator.share){navigator.share({title:'Lineup Legends',text,url}).catch(()=>{});}
+  const text='⚽ Legendary XI — can you guess the famous football lineups?\nHow good is your football knowledge?\n'+url;
+  if(navigator.share){navigator.share({title:'Legendary XI',text,url}).catch(()=>{});}
   else if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>toast('Link copied!','ok'));}
 });
 
@@ -1788,7 +1788,7 @@ function generateChallenge(){
     n:encodeURIComponent(name),
     grp:S.groupId
   });
-  const url='https://lineuplegends.netlify.app/?'+params.toString();
+  const url='https://lineup-legends-tawny.vercel.app/?'+params.toString();
 
   // Build flat grid
   const flatGrid=S.puzzle.players.map((_,i)=>{
@@ -1804,7 +1804,7 @@ function generateChallenge(){
   ];
   const trash=trashLines[Math.floor(Math.random()*trashLines.length)];
 
-  const shareText=`⚽ Lineup Legends #${S.puzzle.id}
+  const shareText=`⚽ Legendary XI #${S.puzzle.id}
 ${S.puzzle.team} ${S.puzzle.year} ${stars}
 
 ${flatGrid}
@@ -1815,7 +1815,7 @@ ${trash}
 ${url}`;
 
   if(navigator.share){
-    navigator.share({title:'Lineup Legends',text:shareText})
+    navigator.share({title:'Legendary XI',text:shareText})
       .catch(()=>{
         if(navigator.clipboard) navigator.clipboard.writeText(shareText).then(()=>toast('Copied!','ok'));
       });
