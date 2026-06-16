@@ -37,13 +37,11 @@
   --fh:'Barlow Condensed',sans-serif;--fb:'Inter',sans-serif;
 }
 html,body{
-  height:100dvh;
-  max-height:100dvh;
-  overflow:hidden;
-  background:var(--navy);
-  color:var(--white);
-  font-family:var(--fb);
+  height:100dvh;max-height:100dvh;overflow:hidden;
+  background:#060e17;
+  color:var(--white);font-family:var(--fb);
   -webkit-tap-highlight-color:transparent;
+  display:flex;justify-content:center;
 }
 
 #app{
@@ -54,9 +52,9 @@ html,body{
   overflow:hidden;
   width:100%;
   max-width:430px;
-  margin:0 auto;
   background:var(--navy);
   position:relative;
+  box-shadow:0 0 60px rgba(0,0,0,0.5);
 }
 
 /* Pitch fills 100% of #app width — no padding on pitch-wrap */
@@ -382,7 +380,7 @@ header{
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 /* ── PUZZLE PICKER ── */
-#picker{position:fixed;inset:0;background:var(--navy);z-index:80;display:flex;flex-direction:column;overflow:hidden}
+#picker{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:100dvh;background:var(--navy);z-index:80;display:flex;flex-direction:column;overflow:hidden}
 #picker.hidden{display:none}
 #picker-header{padding:12px 14px 8px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
 #picker-tagline-row{padding:6px 14px 2px;font-size:0.72rem;color:var(--muted)}
@@ -404,6 +402,36 @@ header{
 .pcard-meta{font-size:0.74rem;color:rgba(255,255,255,0.55);margin-top:3px}
 .pcard-match{font-size:0.7rem;color:rgba(255,255,255,0.45);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcard-arrow{color:var(--muted);font-size:1rem;flex-shrink:0}
+/* ── RESPONSIVE ── */
+@media(max-width:360px){
+  #score-num{font-size:1.5rem!important}
+  .hbtn{font-size:0.58rem;padding:4px 2px}
+  header,#scorebar{padding-left:8px;padding-right:8px}
+}
+@media(min-width:500px){
+  html,body{align-items:center}
+  #app{
+    border-radius:24px;
+    border:1px solid rgba(255,255,255,0.1);
+    max-height:min(100dvh,900px);
+    height:min(100dvh,900px);
+  }
+  #picker{
+    border-radius:24px;
+    height:min(100dvh,900px);
+    top:50%;transform:translate(-50%,-50%);
+  }
+  #win{border-radius:24px;}
+  #lb-overlay{border-radius:24px;}
+}
+@media(min-width:900px){
+  body::after{
+    content:'📱 Best experienced on mobile';
+    position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+    font-size:0.7rem;color:rgba(255,255,255,0.15);
+    font-family:var(--fb);pointer-events:none;
+  }
+}
 </style>
 </head>
 <body>
@@ -485,7 +513,7 @@ header{
       <button class="wbtn wbtn-challenge" id="challenge-btn" style="width:100%;margin-bottom:10px">⚔️ Challenge Friends</button>
       <div class="wbtns">
         <button class="wbtn wbtn-lb" id="view-lb-btn">🏅 Board</button>
-        <button class="wbtn wbtn-play" id="again-btn">▶ Play</button>
+        <button class="wbtn wbtn-play" id="again-btn">▶ More Lineups</button>
       </div>
     </div>
     <!-- Name entry — appears when Share tapped -->
@@ -617,6 +645,58 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"LM","name":"Rivaldo","nat":"Brazil","club":"Barcelona"},
   {"pos":"ST","name":"Ronaldo","nat":"Brazil","club":"Inter Milan"},
   {"pos":"ST","name":"Edilson","nat":"Brazil","club":"Cruzeiro"}
+]},
+{"id":30,"team":"Liverpool","competition":"Premier League","match":"Premier League Title Winners vs Tottenham (5-1)","formation":"433","year":2025,"difficulty":2,"players":[
+  {"pos":"GK","name":"Alisson","nat":"Brazil","club":"Liverpool"},
+  {"pos":"RB","name":"Trent Alexander-Arnold","nat":"England","club":"Liverpool"},
+  {"pos":"CB","name":"Ibrahima Konate","nat":"France","club":"Liverpool"},
+  {"pos":"CB","name":"Virgil van Dijk","nat":"Netherlands","club":"Liverpool"},
+  {"pos":"LB","name":"Andrew Robertson","nat":"Scotland","club":"Liverpool"},
+  {"pos":"CM","name":"Ryan Gravenberch","nat":"Netherlands","club":"Liverpool"},
+  {"pos":"CM","name":"Alexis Mac Allister","nat":"Argentina","club":"Liverpool"},
+  {"pos":"CM","name":"Dominik Szoboszlai","nat":"Hungary","club":"Liverpool"},
+  {"pos":"RW","name":"Mohamed Salah","nat":"Egypt","club":"Liverpool"},
+  {"pos":"ST","name":"Cody Gakpo","nat":"Netherlands","club":"Liverpool"},
+  {"pos":"LW","name":"Luis Diaz","nat":"Colombia","club":"Liverpool"}
+]},
+{"id":31,"team":"Manchester City","competition":"Premier League","match":"Premier League Title Winners vs West Ham (Record 4th Straight)","formation":"4141","year":2024,"difficulty":2,"players":[
+  {"pos":"GK","name":"Stefan Ortega","nat":"Germany","club":"Manchester City"},
+  {"pos":"RB","name":"Kyle Walker","nat":"England","club":"Manchester City"},
+  {"pos":"CB","name":"Manuel Akanji","nat":"Switzerland","club":"Manchester City"},
+  {"pos":"CB","name":"Ruben Dias","nat":"Portugal","club":"Manchester City"},
+  {"pos":"LB","name":"Josko Gvardiol","nat":"Croatia","club":"Manchester City"},
+  {"pos":"DM","name":"Rodri","nat":"Spain","club":"Manchester City"},
+  {"pos":"RM","name":"Jeremy Doku","nat":"Belgium","club":"Manchester City"},
+  {"pos":"CM","name":"Phil Foden","nat":"England","club":"Manchester City"},
+  {"pos":"AM","name":"Kevin De Bruyne","nat":"Belgium","club":"Manchester City"},
+  {"pos":"LM","name":"Bernardo Silva","nat":"Portugal","club":"Manchester City"},
+  {"pos":"ST","name":"Erling Haaland","nat":"Norway","club":"Manchester City"}
+]},
+{"id":32,"team":"Manchester City","competition":"Premier League","match":"Premier League Title Winners vs Chelsea (Treble Season)","formation":"433","year":2023,"difficulty":2,"players":[
+  {"pos":"GK","name":"Ederson","nat":"Brazil","club":"Manchester City"},
+  {"pos":"RB","name":"Kyle Walker","nat":"England","club":"Manchester City"},
+  {"pos":"CB","name":"Ruben Dias","nat":"Portugal","club":"Manchester City"},
+  {"pos":"CB","name":"Manuel Akanji","nat":"Switzerland","club":"Manchester City"},
+  {"pos":"LB","name":"Josko Gvardiol","nat":"Croatia","club":"Manchester City"},
+  {"pos":"CM","name":"Rodri","nat":"Spain","club":"Manchester City"},
+  {"pos":"CM","name":"Ilkay Gundogan","nat":"Germany","club":"Manchester City"},
+  {"pos":"CM","name":"Kevin De Bruyne","nat":"Belgium","club":"Manchester City"},
+  {"pos":"RW","name":"Jack Grealish","nat":"England","club":"Manchester City"},
+  {"pos":"ST","name":"Julian Alvarez","nat":"Argentina","club":"Manchester City"},
+  {"pos":"LW","name":"Riyad Mahrez","nat":"Algeria","club":"Manchester City"}
+]},
+{"id":33,"team":"France","competition":"International","match":"UEFA Euro 2000 Final vs Italy (Golden Goal)","formation":"433","year":2000,"difficulty":4,"players":[
+  {"pos":"GK","name":"Fabien Barthez","nat":"France","club":"Manchester United"},
+  {"pos":"RB","name":"Lilian Thuram","nat":"France","club":"Parma"},
+  {"pos":"CB","name":"Marcel Desailly","nat":"France","club":"Chelsea"},
+  {"pos":"CB","name":"Laurent Blanc","nat":"France","club":"Inter Milan"},
+  {"pos":"LB","name":"Bixente Lizarazu","nat":"France","club":"Bayern Munich"},
+  {"pos":"CM","name":"Patrick Vieira","nat":"France","club":"Arsenal"},
+  {"pos":"CM","name":"Didier Deschamps","nat":"France","club":"Chelsea"},
+  {"pos":"CM","name":"Zinedine Zidane","nat":"France","club":"Real Madrid"},
+  {"pos":"RW","name":"Thierry Henry","nat":"France","club":"Arsenal"},
+  {"pos":"ST","name":"Youri Djorkaeff","nat":"France","club":"Kaiserslautern"},
+  {"pos":"LW","name":"Christophe Dugarry","nat":"France","club":"Barcelona"}
 ]}];
 
 const FLAGS={"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Republic of Ireland":"🇮🇪","France":"🇫🇷","Spain":"🇪🇸","Germany":"🇩🇪","Italy":"🇮🇹","Netherlands":"🇳🇱","Portugal":"🇵🇹","Brazil":"🇧🇷","Argentina":"🇦🇷","Australia":"🇦🇺","Norway":"🇳🇴","Sweden":"🇸🇪","Denmark":"🇩🇰","Finland":"🇫🇮","Poland":"🇵🇱","Belgium":"🇧🇪","Ivory Coast":"🇨🇮","Cameroon":"🇨🇲","Mali":"🇲🇱","Ghana":"🇬🇭","Algeria":"🇩🇿","Nigeria":"🇳🇬","Japan":"🇯🇵","Czech Republic":"🇨🇿","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹","Austria":"🇦🇹","Morocco":"🇲🇦","Senegal":"🇸🇳","South Korea":"🇰🇷","Croatia":"🇭🇷","Switzerland":"🇨🇭"};
@@ -1492,7 +1572,7 @@ const TEAM_COLOURS={
   'Arsenal':'🔴','Liverpool':'🔴','Manchester United':'🔴',
   'Chelsea':'🔵','Manchester City':'🩵','Leicester City':'🔵',
   'Leeds United':'💛','Barcelona':'🔵','Real Madrid':'⚪',
-  'AC Milan':'🔴','Blackburn Rovers':'🔵','Italy':'🔵','Brazil':'💛',
+  'AC Milan':'🔴','Blackburn Rovers':'🔵','Italy':'🔵','Brazil':'💛','Liverpool':'🔴',
 };
 function teamEmoji(team){
   if(TEAM_FLAGS[team]){
