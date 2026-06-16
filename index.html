@@ -697,6 +697,32 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"RW","name":"Thierry Henry","nat":"France","club":"Arsenal"},
   {"pos":"ST","name":"Youri Djorkaeff","nat":"France","club":"Kaiserslautern"},
   {"pos":"LW","name":"Christophe Dugarry","nat":"France","club":"Barcelona"}
+]},
+{"id":34,"team":"Chelsea","competition":"Premier League","match":"Premier League Title Winners vs Bolton Wanderers (Record 95pts)","formation":"433","year":2005,"difficulty":3,"players":[
+  {"pos":"GK","name":"Petr Cech","nat":"Czech Republic","club":"Chelsea"},
+  {"pos":"RB","name":"Paulo Ferreira","nat":"Portugal","club":"Chelsea"},
+  {"pos":"CB","name":"John Terry","nat":"England","club":"Chelsea"},
+  {"pos":"CB","name":"Ricardo Carvalho","nat":"Portugal","club":"Chelsea"},
+  {"pos":"LB","name":"William Gallas","nat":"France","club":"Chelsea"},
+  {"pos":"CM","name":"Claude Makelele","nat":"France","club":"Chelsea"},
+  {"pos":"CM","name":"Frank Lampard","nat":"England","club":"Chelsea"},
+  {"pos":"CM","name":"Arjen Robben","nat":"Netherlands","club":"Chelsea"},
+  {"pos":"RW","name":"Damien Duff","nat":"Ireland","club":"Chelsea"},
+  {"pos":"ST","name":"Eidur Gudjohnsen","nat":"Iceland","club":"Chelsea"},
+  {"pos":"LW","name":"Didier Drogba","nat":"Ivory Coast","club":"Chelsea"}
+]},
+{"id":35,"team":"Manchester City","competition":"Premier League","match":"Premier League Title Winners vs West Ham (Third Straight)","formation":"433","year":2023,"difficulty":2,"players":[
+  {"pos":"GK","name":"Ederson","nat":"Brazil","club":"Manchester City"},
+  {"pos":"RB","name":"Kyle Walker","nat":"England","club":"Manchester City"},
+  {"pos":"CB","name":"Ruben Dias","nat":"Portugal","club":"Manchester City"},
+  {"pos":"CB","name":"Manuel Akanji","nat":"Switzerland","club":"Manchester City"},
+  {"pos":"LB","name":"Nathan Ake","nat":"Netherlands","club":"Manchester City"},
+  {"pos":"CM","name":"Rodri","nat":"Spain","club":"Manchester City"},
+  {"pos":"CM","name":"Kevin De Bruyne","nat":"Belgium","club":"Manchester City"},
+  {"pos":"CM","name":"Bernardo Silva","nat":"Portugal","club":"Manchester City"},
+  {"pos":"RW","name":"Phil Foden","nat":"England","club":"Manchester City"},
+  {"pos":"ST","name":"Erling Haaland","nat":"Norway","club":"Manchester City"},
+  {"pos":"LW","name":"Jack Grealish","nat":"England","club":"Manchester City"}
 ]}];
 
 const FLAGS={"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Republic of Ireland":"🇮🇪","France":"🇫🇷","Spain":"🇪🇸","Germany":"🇩🇪","Italy":"🇮🇹","Netherlands":"🇳🇱","Portugal":"🇵🇹","Brazil":"🇧🇷","Argentina":"🇦🇷","Australia":"🇦🇺","Norway":"🇳🇴","Sweden":"🇸🇪","Denmark":"🇩🇰","Finland":"🇫🇮","Poland":"🇵🇱","Belgium":"🇧🇪","Ivory Coast":"🇨🇮","Cameroon":"🇨🇲","Mali":"🇲🇱","Ghana":"🇬🇭","Algeria":"🇩🇿","Nigeria":"🇳🇬","Japan":"🇯🇵","Czech Republic":"🇨🇿","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹","Austria":"🇦🇹","Morocco":"🇲🇦","Senegal":"🇸🇳","South Korea":"🇰🇷","Croatia":"🇭🇷","Switzerland":"🇨🇭"};
@@ -806,7 +832,7 @@ function fuzzyMatch(guess, target){
 
 // getSurname: handles compound surnames like "De Bruyne", "Arne Riise", "Obi Mikel"
 // Prefixes that are part of the surname, not a first name
-const PREFIXES=new Set(['de','van','von','den','der','el','al','arne','obi','dos','di','da','le','la']);
+const PREFIXES=new Set(['de','van','von','den','der','el','al','obi','dos','di','da','le','la','mac','mc']);
 function getSurname(name){
   const parts=name.trim().split(' ');
   if(parts.length===1) return parts[0];
@@ -1572,7 +1598,7 @@ const TEAM_COLOURS={
   'Arsenal':'🔴','Liverpool':'🔴','Manchester United':'🔴',
   'Chelsea':'🔵','Manchester City':'🩵','Leicester City':'🔵',
   'Leeds United':'💛','Barcelona':'🔵','Real Madrid':'⚪',
-  'AC Milan':'🔴','Blackburn Rovers':'🔵','Italy':'🔵','Brazil':'💛','Liverpool':'🔴',
+  'AC Milan':'🔴','Blackburn Rovers':'🔵','Italy':'🔵','Brazil':'💛','Liverpool':'🔴','Chelsea':'🔵',
 };
 function teamEmoji(team){
   if(TEAM_FLAGS[team]){
