@@ -352,7 +352,7 @@ header{
 #wsubmit-msg{font-size:0.7rem;color:var(--lime);font-weight:600;min-height:1rem;margin-bottom:8px;text-align:center}
 
 /* Leaderboard overlay */
-#lb-overlay{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.96);z-index:60;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#lb-overlay{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.96);z-index:90;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
 #lb-overlay.show{display:flex}
 #lb-card{background:#0f1f33;border:1.5px solid rgba(255,180,0,0.3);border-radius:20px;width:93%;max-width:380px;max-height:85dvh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 60px rgba(255,180,0,0.15)}
 #lb-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
@@ -1548,6 +1548,7 @@ async function submitScore(){
   const btn=document.getElementById('submit-score-btn');
   btn.disabled=true;btn.textContent='Saving…';
   S.playerName=name;
+  if(msgEl)msgEl.textContent='';
   const grade=getGrade(S.score);
   const elapsed=S.start?Math.round((Date.now()-S.start)/1000):0;
   try{
@@ -1806,9 +1807,17 @@ ${trash}
 👥 Group scores:
 ${url}`;
   if(navigator.share){
-    navigator.share({title:'Lineup Legends Challenge',text:shareText}).catch(()=>{});
+    navigator.share({title:'Lineup Legends Challenge',text:shareText}).catch((err)=>{
+      // Share failed or was cancelled — fall back to clipboard
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(shareText).then(()=>toast('Link copied to clipboard!','ok'));
+      }
+    });
   } else if(navigator.clipboard){
-    navigator.clipboard.writeText(shareText).then(()=>toast('Copied!','ok'));
+    navigator.clipboard.writeText(shareText).then(()=>toast('Link copied to clipboard!','ok'));
+  } else {
+    // Last resort — show the text in an alert so they can copy manually
+    prompt('Copy your challenge link:',url);
   }
 }
 
