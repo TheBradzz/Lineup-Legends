@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Legendary XI</title>
 
 <!-- Open Graph — controls preview in WhatsApp, iMessage, Twitter, Facebook -->
@@ -593,6 +593,24 @@ function getSummaryStats(){
     bestPuzzle:bestPuzzle?`${bestPuzzle.team} ${bestPuzzle.year}`:'',bestScore:best[1].score};
 }
 
+// ── KEYBOARD FIX (iOS Safari) ──
+// Use visualViewport to detect keyboard and keep bottom chrome visible
+if(window.visualViewport){
+  function handleViewport(){
+    const vv=window.visualViewport;
+    const app=document.getElementById('app');
+    if(!app)return;
+    // When keyboard is open, viewport height shrinks
+    // Pin the app height to the visual viewport height
+    app.style.height=vv.height+'px';
+    app.style.maxHeight=vv.height+'px';
+    // Offset for any viewport scroll (iOS sometimes scrolls the page)
+    app.style.transform='translateY('+vv.offsetTop+'px)';
+  }
+  window.visualViewport.addEventListener('resize',handleViewport);
+  window.visualViewport.addEventListener('scroll',handleViewport);
+}
+
 // ── SUPABASE ── (defined first so all functions can use it)
 const SB_URL='https://ecjrsjxvdtmvtgygnwxd.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjanJzanh2ZHRtdnRneWdud3hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjQ4NjAsImV4cCI6MjA5NzEwMDg2MH0.hy0tXkSxRLEN18xnYTke3qh_FfOJ5P4Bn6ARvdCe-_Y';
@@ -762,6 +780,45 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"RW","name":"Phil Foden","nat":"England","club":"Manchester City"},
   {"pos":"ST","name":"Erling Haaland","nat":"Norway","club":"Manchester City"},
   {"pos":"LW","name":"Jack Grealish","nat":"England","club":"Manchester City"}
+]},
+{"id":36,"team":"Manchester United","competition":"Champions League","match":"UEFA Champions League Final vs Chelsea (Moscow Penalty Shootout)","formation":"442","year":2008,"difficulty":3,"players":[
+  {"pos":"GK","name":"Edwin van der Sar","nat":"Netherlands","club":"Manchester United"},
+  {"pos":"RB","name":"Wes Brown","nat":"England","club":"Manchester United"},
+  {"pos":"CB","name":"Rio Ferdinand","nat":"England","club":"Manchester United"},
+  {"pos":"CB","name":"Nemanja Vidic","nat":"Serbia","club":"Manchester United"},
+  {"pos":"LB","name":"Patrice Evra","nat":"France","club":"Manchester United"},
+  {"pos":"RM","name":"Owen Hargreaves","nat":"England","club":"Manchester United"},
+  {"pos":"CM","name":"Michael Carrick","nat":"England","club":"Manchester United"},
+  {"pos":"LM","name":"Paul Scholes","nat":"England","club":"Manchester United"},
+  {"pos":"RW","name":"Cristiano Ronaldo","nat":"Portugal","club":"Manchester United"},
+  {"pos":"ST","name":"Carlos Tevez","nat":"Argentina","club":"Manchester United"},
+  {"pos":"LW","name":"Wayne Rooney","nat":"England","club":"Manchester United"}
+]},
+{"id":37,"team":"Arsenal","competition":"Premier League","match":"Premier League Title Winners vs Manchester United at Old Trafford","formation":"442","year":2002,"difficulty":3,"players":[
+  {"pos":"GK","name":"David Seaman","nat":"England","club":"Arsenal"},
+  {"pos":"RB","name":"Lauren","nat":"Cameroon","club":"Arsenal"},
+  {"pos":"CB","name":"Sol Campbell","nat":"England","club":"Arsenal"},
+  {"pos":"CB","name":"Martin Keown","nat":"England","club":"Arsenal"},
+  {"pos":"LB","name":"Ashley Cole","nat":"England","club":"Arsenal"},
+  {"pos":"RM","name":"Freddie Ljungberg","nat":"Sweden","club":"Arsenal"},
+  {"pos":"CM","name":"Patrick Vieira","nat":"France","club":"Arsenal"},
+  {"pos":"CM","name":"Ray Parlour","nat":"England","club":"Arsenal"},
+  {"pos":"LM","name":"Robert Pires","nat":"France","club":"Arsenal"},
+  {"pos":"ST","name":"Thierry Henry","nat":"France","club":"Arsenal"},
+  {"pos":"ST","name":"Sylvain Wiltord","nat":"France","club":"Arsenal"}
+]},
+{"id":38,"team":"Chelsea","competition":"Premier League","match":"Premier League Title Winners vs Wigan Athletic (8-0, 103 Goals Season)","formation":"433","year":2010,"difficulty":3,"players":[
+  {"pos":"GK","name":"Petr Cech","nat":"Czech Republic","club":"Chelsea"},
+  {"pos":"RB","name":"Branislav Ivanovic","nat":"Serbia","club":"Chelsea"},
+  {"pos":"CB","name":"John Terry","nat":"England","club":"Chelsea"},
+  {"pos":"CB","name":"Ricardo Carvalho","nat":"Portugal","club":"Chelsea"},
+  {"pos":"LB","name":"Ashley Cole","nat":"England","club":"Chelsea"},
+  {"pos":"CM","name":"John Obi Mikel","nat":"Nigeria","club":"Chelsea"},
+  {"pos":"CM","name":"Frank Lampard","nat":"England","club":"Chelsea"},
+  {"pos":"CM","name":"Michael Ballack","nat":"Germany","club":"Chelsea"},
+  {"pos":"RW","name":"Nicolas Anelka","nat":"France","club":"Chelsea"},
+  {"pos":"ST","name":"Didier Drogba","nat":"Ivory Coast","club":"Chelsea"},
+  {"pos":"LW","name":"Florent Malouda","nat":"France","club":"Chelsea"}
 ]}];
 
 const FLAGS={"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Republic of Ireland":"🇮🇪","France":"🇫🇷","Spain":"🇪🇸","Germany":"🇩🇪","Italy":"🇮🇹","Netherlands":"🇳🇱","Portugal":"🇵🇹","Brazil":"🇧🇷","Argentina":"🇦🇷","Australia":"🇦🇺","Norway":"🇳🇴","Sweden":"🇸🇪","Denmark":"🇩🇰","Finland":"🇫🇮","Poland":"🇵🇱","Belgium":"🇧🇪","Ivory Coast":"🇨🇮","Cameroon":"🇨🇲","Mali":"🇲🇱","Ghana":"🇬🇭","Algeria":"🇩🇿","Nigeria":"🇳🇬","Japan":"🇯🇵","Czech Republic":"🇨🇿","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹","Austria":"🇦🇹","Morocco":"🇲🇦","Senegal":"🇸🇳","South Korea":"🇰🇷","Croatia":"🇭🇷","Switzerland":"🇨🇭"};
@@ -1643,9 +1700,23 @@ function buildPickerList(){
           <div class="pcard-meta">${fmt} &nbsp;·&nbsp; ${p.year} &nbsp;·&nbsp; ${"⭐".repeat(p.difficulty||3)}</div>
           <div class="pcard-match">${p.match}</div>
         </div>
-        ${(()=>{const st=loadStats()[String(p.id)];const gc={S:'#FFD700',A:'#b5ff4d',B:'#5bc8ff',C:'#ff9f1c',D:'#ff9f1c',F:'#ff5c5c'};return st?`<div style="font-family:var(--fh);font-size:1.1rem;font-weight:800;color:${gc[st.grade]};width:32px;height:32px;border-radius:7px;border:1.5px solid ${gc[st.grade]}40;background:${gc[st.grade]}18;display:flex;align-items:center;justify-content:center;flex-shrink:0">${st.grade}</div>`:'<div style="width:32px;flex-shrink:0"></div>';})()}
+        <div class="pcard-grade-slot" id="pgs-${p.id}"></div>
         <div class="pcard-arrow">›</div>`;
-      card.addEventListener('click', () => { hidePicker(); init(p); });
+      // Add grade badge safely
+      const slot=card.querySelector('.pcard-grade-slot');
+      if(slot){
+        const st=loadStats()[String(p.id)];
+        if(st){
+          const gc={S:'#FFD700',A:'#b5ff4d',B:'#5bc8ff',C:'#ff9f1c',D:'#ff9f1c',F:'#ff5c5c'};
+          const badge=document.createElement('div');
+          badge.style.cssText='font-family:var(--fh);font-size:1.1rem;font-weight:800;color:'+gc[st.grade]+';width:32px;height:32px;border-radius:7px;border:1.5px solid '+gc[st.grade]+'55;background:'+gc[st.grade]+'22;display:flex;align-items:center;justify-content:center;flex-shrink:0';
+          badge.textContent=st.grade;
+          slot.replaceWith(badge);
+        } else {
+          slot.style.cssText='width:32px;flex-shrink:0';
+        }
+      }
+      card.addEventListener('click',()=>{hidePicker();init(p);});
       grp.appendChild(card);
     });
     scroll.appendChild(grp);
@@ -1659,7 +1730,7 @@ const TEAM_COLOURS={
   'Arsenal':'🔴','Liverpool':'🔴','Manchester United':'🔴',
   'Chelsea':'🔵','Manchester City':'🩵','Leicester City':'🔵',
   'Leeds United':'💛','Barcelona':'🔵','Real Madrid':'⚪',
-  'AC Milan':'🔴','Blackburn Rovers':'🔵','Italy':'🔵','Brazil':'💛','Liverpool':'🔴','Chelsea':'🔵',
+  'AC Milan':'🔴','Blackburn Rovers':'🔵','Italy':'🔵','Brazil':'💛','Liverpool':'🔴','Chelsea':'🔵','Manchester United':'🔴','Arsenal':'🔴',
 };
 function teamEmoji(team){
   if(TEAM_FLAGS[team]){
