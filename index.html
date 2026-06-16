@@ -1772,26 +1772,57 @@ function buildChallengeUrl(){
 
 function generateChallenge(){
   const name=S.playerName||'Someone';
-  const url='https://lineuplegends.netlify.app';
-  const shareText='⚽ Lineup Legends\n'+name+' challenges you!\n\n'+url;
-  
-  const hasShare=!!navigator.share;
-  const hasClip=!!navigator.clipboard;
-  
-  // Show what API is available
-  toast(hasShare?'Sharing...':hasClip?'Copying...':'No share API','ok');
-  
-  if(hasShare){
+  const grade=getGrade(S.score);
+  const elapsed=S.start?Math.round((Date.now()-S.start)/1000):0;
+  const mins=Math.floor(elapsed/60),secs=elapsed%60;
+  const tStr=mins>0?`${mins}m ${secs}s`:`${elapsed}s`;
+  const stars='⭐'.repeat(S.puzzle.difficulty||3);
+
+  // Build challenge URL with puzzle id, score, grade, time, name
+  if(!S.groupId) S.groupId=Math.random().toString(36).slice(2,8).toUpperCase();
+  const params=new URLSearchParams({
+    c:S.puzzle.id,
+    s:S.score,
+    g:grade.letter,
+    t:elapsed,
+    n:encodeURIComponent(name),
+    grp:S.groupId
+  });
+  const url='https://lineuplegends.netlify.app/?'+params.toString();
+
+  // Build flat grid
+  const flatGrid=S.puzzle.players.map((_,i)=>{
+    if(S.revealedPlayers&&S.revealedPlayers.has(i))return'🟥';
+    return(S.natDone.has(i)||(S.lettersRevealed.get(i)||0)>0)?'🟨':'🟩';
+  }).join('');
+
+  const trashLines=[
+    `${name} got Grade ${grade.letter} on ${S.puzzle.team} ${S.puzzle.year} in ${tStr} (${S.score.toLocaleString()}pts). Think you can do better? 😂`,
+    `${name} smashed ${S.puzzle.team} ${S.puzzle.year} — Grade ${grade.letter}, ${S.score.toLocaleString()}pts in ${tStr}. Don't embarrass yourself 👀`,
+    `Grade ${grade.letter}. ${S.score.toLocaleString()}pts. ${tStr}. ${name} is waiting... 😤`,
+    `${name} completed ${S.puzzle.team} ${S.puzzle.year} ${stars} in ${tStr}. Your move 👊`,
+  ];
+  const trash=trashLines[Math.floor(Math.random()*trashLines.length)];
+
+  const shareText=`⚽ Lineup Legends #${S.puzzle.id}
+${S.puzzle.team} ${S.puzzle.year} ${stars}
+
+${flatGrid}
+
+${trash}
+
+👥 Beat me:
+${url}`;
+
+  if(navigator.share){
     navigator.share({title:'Lineup Legends',text:shareText})
-      .then(()=>toast('Shared!','ok'))
-      .catch(err=>{
-        toast('Share cancelled/failed','ok');
-        if(hasClip) navigator.clipboard.writeText(shareText).then(()=>toast('Copied instead!','ok'));
+      .catch(()=>{
+        if(navigator.clipboard) navigator.clipboard.writeText(shareText).then(()=>toast('Copied!','ok'));
       });
-  } else if(hasClip){
-    navigator.clipboard.writeText(shareText).then(()=>toast('Copied to clipboard!','ok'));
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(shareText).then(()=>toast('Copied!','ok'));
   } else {
-    alert('Challenge link:\n'+url);
+    alert('Copy your challenge link:\n'+url);
   }
 }
 
