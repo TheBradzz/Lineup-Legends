@@ -1,2 +1,2 @@
-# Lineup-Legends
-Lineup legends game
+# Legendary XI
+Legendary XI game
