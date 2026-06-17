@@ -34,6 +34,7 @@
 :root{
   --navy:#0D1B2A;--pitch:#0e3d1f;--lime:#B5FF4D;--lime2:#8de020;
   --white:#F0F4F8;--muted:#6b8caa;--wrong:#ff5c5c;
+  --pitch-dark:#0a1830;--pitch-dark-stripe:#0d2040;
   --fh:'Barlow Condensed',sans-serif;--fb:'Inter',sans-serif;
 }
 html,body{
@@ -59,29 +60,18 @@ html,body{
 
 /* Pitch fills 100% of #app width — no padding on pitch-wrap */
 
-/* ── TOP CHROME ── */
+/* ── TOP CHROME — single row: score (left) · title+comp (flexible middle) · buttons (right) ──
+   All three live inside #scorebar as flex children on ONE line, vertically centred.
+   #hcomp (competition subtitle) sits under the title within the middle column.
+   Below the bar: #mode-toggle-wrap (TOTS only) then #prog-wrap. Nothing absolute
+   except #score-flash (pure visual overlay).
+*/
+#app{position:relative;}
 
-/* Row 1: Logo + back button */
-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 12px 8px;
-  border-bottom:1px solid rgba(255,255,255,0.07);
-}
-.logo{font-family:var(--fh);font-weight:800;line-height:1;display:block}
-.logo-legendary{font-size:1.1rem;color:var(--white);letter-spacing:-0.3px;display:block}
-.logo-xi{font-size:1.8rem;color:var(--lime);letter-spacing:-1px;display:block;margin-top:-2px}
-#back-btn{
-  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
-  border-radius:8px;color:var(--muted);font-family:var(--fb);font-size:0.72rem;
-  font-weight:600;padding:5px 11px;cursor:pointer;
-}
-#back-btn:active{background:rgba(255,255,255,0.14)}
-
-/* Row 2: Score (hero) + puzzle info side by side */
 #scorebar{
-  display:flex;align-items:center;gap:12px;
-  padding:8px 12px 7px;
-  border-bottom:1px solid rgba(255,255,255,0.07);
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px 6px;
+  flex-shrink:0;
 }
 #score-block{
   display:flex;flex-direction:column;align-items:flex-start;
@@ -90,7 +80,7 @@ header{
   padding-right:12px;
 }
 #score-num{
-  font-family:var(--fh);font-size:3rem;font-weight:800;
+  font-family:var(--fh);font-size:2.8rem;font-weight:800;
   line-height:1;color:var(--lime);
   transition:color 0.3s;
 }
@@ -98,12 +88,34 @@ header{
 @keyframes scoreUp{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 #score-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;font-weight:700;margin-top:1px}
 #score-meta{flex:1;min-width:0}
-#ptitle{font-family:var(--fh);font-weight:700;font-size:1rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#hcomp{font-size:0.6rem;color:var(--muted);font-weight:500;letter-spacing:0.2px;margin-top:3px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+#ptitle{font-family:var(--fh);font-weight:700;font-size:1.1rem;line-height:1.25;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#hcomp{font-size:0.68rem;color:var(--muted);font-weight:500;letter-spacing:0.2px;margin-top:3px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 #hints-used{font-size:0.62rem;color:var(--muted);font-weight:500;margin-top:1px}
 
-/* Row 3: Progress bar only — no text label */
-#prog-wrap{padding:0}
+/* Buttons column — pinned right, vertically centred on the same row as score+title */
+#header-row{
+  display:flex;align-items:center;gap:6px;
+  flex-shrink:0;
+  align-self:flex-start;
+}
+#back-btn{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);
+  border-radius:7px;color:var(--muted);font-family:var(--fb);font-size:0.66rem;
+  font-weight:600;padding:4px 8px;cursor:pointer;white-space:nowrap;
+}
+#back-btn:active{background:rgba(255,255,255,0.16)}
+#theme-btn{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);
+  border-radius:7px;color:var(--muted);
+  width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;padding:0;
+}
+#theme-btn:active{background:rgba(255,255,255,0.16)}
+#theme-btn.active{background:rgba(181,255,77,0.15);border-color:rgba(181,255,77,0.4);color:var(--lime)}
+#theme-btn svg{width:14px;height:14px;}
+
+#prog-wrap{padding:0;border-top:1px solid rgba(255,255,255,0.07);margin-top:2px;flex-shrink:0}
 #prog-track{height:4px;background:rgba(255,255,255,0.1);overflow:hidden}
 #prog-fill{height:100%;background:var(--lime);border-radius:0;width:0%;transition:width 0.5s cubic-bezier(.22,.68,0,1.2)}
 
@@ -115,7 +127,9 @@ header{
 }
 #challenge-banner .cb-name{font-family:var(--fh);font-size:0.88rem;font-weight:800;color:rgba(255,210,80,0.95);line-height:1.3}
 #challenge-banner .cb-score{font-size:0.65rem;color:rgba(255,255,255,0.55);margin-top:2px}
-/* Pitch fills 100% of #app width — no padding on pitch-wrap */
+/* Pitch fills available space — constrained by BOTH width and height so aspect-ratio
+   shrinks whichever dimension is tighter, instead of always sizing from width and
+   letting height overflow + clip when vertical space is limited (e.g. TOTS toggle row). */
 #pitch-wrap{padding:2px 0;display:flex;justify-content:center;align-items:center;flex:1;min-height:0;overflow:hidden}
 #pitch{
   position:relative;
@@ -131,10 +145,33 @@ header{
   overflow:hidden;
   box-shadow:0 4px 24px rgba(0,0,0,0.5);
   z-index:0;
+  transition:background 0.4s;
 }
 #pitch-bg::before{
   content:'';position:absolute;inset:0;
   background:repeating-linear-gradient(to bottom,transparent 0,transparent 9%,rgba(0,0,0,0.09) 9%,rgba(0,0,0,0.09) 18%);
+}
+/* Dark neon pitch theme — matches picker screen aesthetic */
+body.dark-pitch #pitch-bg{
+  background:linear-gradient(180deg,var(--pitch-dark) 0%,#0c1c38 100%);
+}
+body.dark-pitch #pitch-bg::before{
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 9%,rgba(181,255,77,0.04) 9%,rgba(181,255,77,0.04) 18%);
+}
+body.dark-pitch .ring{
+  background:#13294d;
+  border-color:rgba(181,255,77,0.55);
+}
+body.dark-pitch .pdot.active .ring{
+  border-color:var(--lime);
+  box-shadow:0 0 0 3px rgba(181,255,77,0.5),0 0 16px rgba(181,255,77,0.4);
+}
+body.dark-pitch .pdot.solved .ring{
+  background:var(--lime);border-color:var(--lime2);color:#0a2000;
+}
+body.dark-pitch .tag{
+  background:rgba(8,16,32,0.92);
+  border:1px solid rgba(181,255,77,0.15);
 }
 
 /* ── PLAYER DOT ──
@@ -157,12 +194,13 @@ header{
   gap:0;
 }
 .ring{
-  width:var(--dot-size,58px);height:var(--dot-size,58px);
+  width:var(--dot-size,clamp(46px,13vw,60px));height:var(--dot-size,clamp(46px,13vw,60px));
   border-radius:50%;
   background:#1b6132;
   border:2.5px solid rgba(255,255,255,0.85);
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--fh);font-weight:800;font-size:var(--dot-font,1.05rem);
+  font-family:var(--fh);font-weight:800;font-size:var(--dot-font,clamp(1.05rem,3.8vw,1.45rem));
+  letter-spacing:-0.5px;
   color:#fff;
   flex-shrink:0;
   transition:background 0.25s,border-color 0.25s,box-shadow 0.25s;
@@ -177,26 +215,31 @@ header{
   align-items:center;
   background:rgba(10,20,15,0.92);
   border-radius:4px;
-  padding:3px 7px;
-  margin-top:3px;
-  min-width:36px;
+  padding:2px 5px;
+  margin-top:2px;
+  min-width:38px;
+  max-width:clamp(80px,28vw,118px);
   gap:0;
+  position:relative;
+  z-index:5;
 }
 .tag-count{
-  font-family:var(--fh);font-size:0.9rem;font-weight:700;
-  color:rgba(255,255,255,0.9);line-height:1.2;white-space:nowrap;
+  font-family:var(--fh);font-size:clamp(0.95rem,3.4vw,1.25rem);font-weight:700;
+  color:rgba(255,255,255,0.92);line-height:1.2;white-space:nowrap;
 }
 .tag-name{
-  font-family:var(--fh);font-size:0.95rem;font-weight:800;
-  color:var(--lime);line-height:1.2;white-space:nowrap;display:none;
+  font-family:var(--fh);font-size:clamp(0.92rem,3.4vw,1.2rem);font-weight:800;
+  color:var(--lime);line-height:1.15;white-space:nowrap;display:none;
+  overflow:hidden;text-overflow:ellipsis;max-width:100%;
 }
 .tag-init{
-  font-family:monospace;font-size:0.88rem;font-weight:700;
+  font-family:monospace;font-size:clamp(0.88rem,3.2vw,1.15rem);font-weight:700;
   color:var(--lime);line-height:1.2;white-space:nowrap;display:none;
 }
 .tag-clue{
-  font-family:var(--fb);font-size:0.72rem;font-weight:600;
-  color:rgba(181,255,77,0.85);line-height:1.2;white-space:nowrap;display:none;
+  font-family:var(--fb);font-size:clamp(0.78rem,2.8vw,0.98rem);font-weight:700;
+  color:rgba(181,255,77,0.95);line-height:1.15;white-space:nowrap;display:none;
+  overflow:hidden;text-overflow:ellipsis;max-width:100%;
 }
 
 /* ── BOTTOM CHROME — input + hints, flex-shrink:0 so keyboard doesn't move pitch ── */
@@ -286,7 +329,7 @@ header{
 
 /* ── TOAST ── */
 #score-flash{
-  position:fixed;top:50%;left:50%;
+  position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
   font-family:var(--fh);font-size:4.5rem;font-weight:800;
   color:var(--lime);
@@ -408,9 +451,14 @@ header{
 .pcard-arrow{color:var(--muted);font-size:1rem;flex-shrink:0}
 /* ── RESPONSIVE ── */
 @media(max-width:360px){
-  #score-num{font-size:1.5rem!important}
+  #score-num{font-size:2.1rem!important}
   .hbtn{font-size:0.58rem;padding:4px 2px}
-  header,#scorebar{padding-left:8px;padding-right:8px}
+  #scorebar{padding-left:8px;padding-right:8px;gap:8px}
+  #header-row{gap:4px}
+  #theme-btn{width:22px;height:22px}
+  #theme-btn svg{width:12px;height:12px}
+  #back-btn{font-size:0.6rem;padding:3px 6px}
+  #ptitle{font-size:0.98rem}
 }
 @media(min-width:500px){
   html,body{align-items:center}
@@ -461,19 +509,8 @@ header{
   <div id="picker-scroll"></div>
 </div>
 
-<div id="score-flash"></div>
 <div id="app">
-  <header>
-    <div class="logo"><span class="logo-legendary">Legendary</span><span class="logo-xi">XI</span></div>
-    <button id="back-btn">⚽ Lineups</button>
-    <div id="mode-toggle-wrap" style="display:none;align-items:center;gap:6px">
-      <span id="mode-label" style="font-family:var(--fh);font-size:0.7rem;font-weight:700;color:var(--muted)">HARD</span>
-      <div id="mode-toggle" role="switch" aria-checked="false" style="width:40px;height:22px;border-radius:11px;background:rgba(255,255,255,0.15);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0">
-        <div id="mode-knob" style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>
-      </div>
-      <span style="font-family:var(--fh);font-size:0.7rem;font-weight:700;color:var(--lime)">EASY</span>
-    </div>
-  </header>
+  <div id="score-flash"></div>
   <div id="scorebar">
     <div id="score-block">
       <div id="score-num">0</div>
@@ -484,6 +521,22 @@ header{
       <div id="hcomp"></div>
       <div id="hints-used"></div>
     </div>
+    <div id="header-row">
+      <button id="theme-btn" title="Toggle pitch theme">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 3a9 9 0 0 0 0 18" fill="currentColor"/>
+        </svg>
+      </button>
+      <button id="back-btn">⚽ Lineups</button>
+    </div>
+  </div>
+  <div id="mode-toggle-wrap" style="display:none;align-items:center;justify-content:flex-end;gap:6px;padding:3px 12px 0;flex-shrink:0">
+    <span id="mode-label" style="font-family:var(--fh);font-size:0.66rem;font-weight:700;color:var(--muted)">HARD</span>
+    <div id="mode-toggle" role="switch" aria-checked="false" style="width:36px;height:20px;border-radius:10px;background:rgba(255,255,255,0.15);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0">
+      <div id="mode-knob" style="position:absolute;top:2.5px;left:2.5px;width:15px;height:15px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>
+    </div>
+    <span style="font-family:var(--fh);font-size:0.66rem;font-weight:700;color:var(--lime)">EASY</span>
   </div>
   <div id="prog-wrap">
     <div id="prog-track"><div id="prog-fill"></div></div>
@@ -498,10 +551,10 @@ header{
   <div id="bottom-chrome">
     <div id="action-box">
       <div id="input-row">
-        <input id="guess-input" type="search" placeholder="Type a surname…"
-          autocomplete="off" autocorrect="off" autocapitalize="none"
-          spellcheck="false" inputmode="text"
-          name="lxi-guess-x9k" aria-label="Player surname"/>
+        <input id="guess-input" type="text" placeholder="Type a surname…"
+          autocomplete="off" autocorrect="off" autocapitalize="words"
+          spellcheck="false" inputmode="text" data-lpignore="true" data-form-type="other"
+          name="q" aria-label="Player surname" readonly onfocus="this.removeAttribute('readonly')"/>
         <button id="gobtn">GO</button>
       </div>
     </div>
@@ -904,7 +957,7 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"GK","name":"Matz Sels","nat":"Belgium","club":"Nottingham Forest"},
   {"pos":"RB","name":"William Saliba","nat":"France","club":"Arsenal"},
   {"pos":"CB","name":"Virgil van Dijk","nat":"Netherlands","club":"Liverpool"},
-  {"pos":"CB","name":"Gabriel Magalhaes","nat":"Brazil","club":"Arsenal"},
+  {"pos":"CB","name":"Gabriel","nat":"Brazil","club":"Arsenal"},
   {"pos":"LB","name":"Milos Kerkez","nat":"Hungary","club":"Bournemouth"},
   {"pos":"CM","name":"Declan Rice","nat":"England","club":"Arsenal"},
   {"pos":"CM","name":"Ryan Gravenberch","nat":"Netherlands","club":"Liverpool"},
@@ -917,7 +970,7 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"GK","name":"David Raya","nat":"Spain","club":"Arsenal"},
   {"pos":"RB","name":"Kyle Walker","nat":"England","club":"Manchester City"},
   {"pos":"CB","name":"William Saliba","nat":"France","club":"Arsenal"},
-  {"pos":"CB","name":"Gabriel Magalhaes","nat":"Brazil","club":"Arsenal"},
+  {"pos":"CB","name":"Gabriel","nat":"Brazil","club":"Arsenal"},
   {"pos":"LB","name":"Virgil van Dijk","nat":"Netherlands","club":"Liverpool"},
   {"pos":"CM","name":"Rodri","nat":"Spain","club":"Manchester City"},
   {"pos":"CM","name":"Martin Odegaard","nat":"Norway","club":"Arsenal"},
@@ -963,7 +1016,7 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"CM","name":"Bruno Fernandes","nat":"Portugal","club":"Manchester United"},
   {"pos":"RW","name":"Mohamed Salah","nat":"Egypt","club":"Liverpool"},
   {"pos":"ST","name":"Harry Kane","nat":"England","club":"Tottenham"},
-  {"pos":"LW","name":"Son Heung-min","nat":"South Korea","club":"Tottenham"}
+  {"pos":"LW","name":"Son","nat":"South Korea","club":"Tottenham"}
 ]}];
 
 const FLAGS={"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Republic of Ireland":"🇮🇪","France":"🇫🇷","Spain":"🇪🇸","Germany":"🇩🇪","Italy":"🇮🇹","Netherlands":"🇳🇱","Portugal":"🇵🇹","Brazil":"🇧🇷","Argentina":"🇦🇷","Australia":"🇦🇺","Norway":"🇳🇴","Sweden":"🇸🇪","Denmark":"🇩🇰","Finland":"🇫🇮","Poland":"🇵🇱","Belgium":"🇧🇪","Ivory Coast":"🇨🇮","Cameroon":"🇨🇲","Mali":"🇲🇱","Ghana":"🇬🇭","Algeria":"🇩🇿","Nigeria":"🇳🇬","Japan":"🇯🇵","Czech Republic":"🇨🇿","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹","Austria":"🇦🇹","Morocco":"🇲🇦","Senegal":"🇸🇳","South Korea":"🇰🇷","Croatia":"🇭🇷","Switzerland":"🇨🇭"};
@@ -974,72 +1027,75 @@ function flag(n){return FLAGS[n]||'🌍';}
 // All y values chosen so the dot+tag fits within the pitch at typical screen sizes
 const LAYOUTS={
   "442":[
-    {x:50,y:74},
-    {x:78,y:62},{x:59,y:62},{x:41,y:62},{x:22,y:62},
-    {x:78,y:44},{x:60,y:48},{x:40,y:48},{x:22,y:44},
-    {x:65,y:28},{x:35,y:28}
+    {x:50,y:86},
+    {x:84,y:67},{x:62,y:67},{x:38,y:67},{x:16,y:67},
+    {x:84,y:44},{x:61,y:48},{x:39,y:48},{x:16,y:44},
+    {x:67,y:20},{x:33,y:20}
   ],
   "433":[
-    {x:50,y:74},
-    {x:78,y:62},{x:59,y:62},{x:41,y:62},{x:22,y:62},
-    {x:67,y:44},{x:50,y:44},{x:33,y:44},
-    {x:78,y:28},{x:50,y:27},{x:22,y:28}
+    {x:50,y:86},
+    {x:84,y:67},{x:62,y:67},{x:38,y:67},{x:16,y:67},
+    {x:71,y:44},{x:50,y:44},{x:29,y:44},
+    {x:84,y:20},{x:50,y:17},{x:16,y:20}
   ],
   "343":[
-    {x:50,y:74},
-    {x:67,y:62},{x:50,y:62},{x:33,y:62},
-    {x:79,y:44},{x:61,y:48},{x:39,y:48},{x:21,y:44},
-    {x:72,y:28},{x:28,y:28},{x:50,y:27}
+    {x:50,y:86},
+    {x:71,y:67},{x:50,y:67},{x:29,y:67},
+    {x:86,y:44},{x:64,y:48},{x:36,y:48},{x:14,y:44},
+    {x:76,y:20},{x:24,y:20},{x:50,y:17}
   ],
   "4231":[
-    {x:50,y:74},
-    {x:78,y:63},{x:59,y:63},{x:41,y:63},{x:22,y:63},
-    {x:62,y:52},{x:38,y:52},
-    {x:77,y:38},{x:50,y:36},{x:23,y:38},
-    {x:50,y:27}
+    {x:50,y:86},
+    {x:84,y:68},{x:62,y:68},{x:38,y:68},{x:16,y:68},
+    {x:66,y:54},{x:34,y:54},
+    {x:83,y:36},{x:50,y:31},{x:17,y:36},
+    {x:50,y:17}
   ],
   "352":[
-    {x:50,y:74},
-    {x:67,y:62},{x:50,y:62},{x:33,y:62},
-    {x:83,y:44},{x:65,y:48},{x:50,y:48},{x:35,y:48},{x:17,y:44},
-    {x:65,y:28},{x:35,y:28}
+    {x:50,y:86},
+    {x:71,y:67},{x:50,y:67},{x:29,y:67},
+    {x:90,y:44},{x:68,y:48},{x:50,y:48},{x:32,y:48},{x:10,y:44},
+    {x:67,y:20},{x:33,y:20}
   ],
   "4411":[
-    {x:50,y:74},
-    {x:78,y:63},{x:59,y:63},{x:41,y:63},{x:22,y:63},
-    {x:78,y:47},{x:59,y:47},{x:41,y:47},{x:22,y:47},
-    {x:50,y:35},
-    {x:50,y:27}
+    {x:50,y:86},
+    {x:84,y:68},{x:62,y:68},{x:38,y:68},{x:16,y:68},
+    {x:84,y:47},{x:62,y:47},{x:38,y:47},{x:16,y:47},
+    {x:50,y:28},
+    {x:50,y:17}
   ],
   "4141":[
-    {x:50,y:74},
-    {x:78,y:63},{x:59,y:63},{x:41,y:63},{x:22,y:63},
-    {x:50,y:52},
-    {x:78,y:38},{x:59,y:38},{x:41,y:38},{x:22,y:38},
-    {x:50,y:27}
+    {x:50,y:86},
+    {x:84,y:68},{x:62,y:68},{x:38,y:68},{x:16,y:68},
+    {x:50,y:51},
+    {x:84,y:34},{x:62,y:34},{x:38,y:34},{x:16,y:34},
+    {x:50,y:17}
   ],
   "532":[
-    {x:50,y:74},
-    {x:78,y:62},{x:61,y:62},{x:50,y:59},{x:39,y:62},{x:22,y:62},
-    {x:78,y:42},{x:50,y:42},{x:22,y:42},
-    {x:65,y:28},{x:35,y:28}
+    {x:50,y:86},
+    {x:86,y:67},{x:65,y:67},{x:50,y:63},{x:35,y:67},{x:14,y:67},
+    {x:84,y:42},{x:50,y:42},{x:16,y:42},
+    {x:67,y:20},{x:33,y:20}
   ]
 };
 
 function pitchSVG(){
+  const dark=document.body.classList.contains('dark-pitch');
+  const stroke=dark?'#b5ff4d':'white';
+  const opacity=dark?0.45:0.28;
   return`<svg viewBox="0 0 68 105" xmlns="http://www.w3.org/2000/svg"
-    style="position:absolute;inset:0;width:100%;height:100%;opacity:0.28;pointer-events:none"
-    stroke="white" stroke-width="0.6" fill="none">
+    style="position:absolute;inset:0;width:100%;height:100%;opacity:${opacity};pointer-events:none"
+    stroke="${stroke}" stroke-width="0.6" fill="none">
     <rect x="2" y="2" width="64" height="101" rx="1"/>
     <line x1="2" y1="52.5" x2="66" y2="52.5"/>
     <circle cx="34" cy="52.5" r="9.15"/>
-    <circle cx="34" cy="52.5" r="0.8" fill="white" stroke="none"/>
+    <circle cx="34" cy="52.5" r="0.8" fill="${stroke}" stroke="none"/>
     <rect x="13.84" y="2" width="40.32" height="16.5"/>
     <rect x="24.84" y="2" width="18.32" height="5.5"/>
-    <circle cx="34" cy="13.8" r="0.8" fill="white" stroke="none"/>
+    <circle cx="34" cy="13.8" r="0.8" fill="${stroke}" stroke="none"/>
     <rect x="13.84" y="86.5" width="40.32" height="16.5"/>
     <rect x="24.84" y="99.5" width="18.32" height="5.5"/>
-    <circle cx="34" cy="91.2" r="0.8" fill="white" stroke="none"/>
+    <circle cx="34" cy="91.2" r="0.8" fill="${stroke}" stroke="none"/>
     <path d="M2,5 A3,3 0 0,0 5,2"/><path d="M66,5 A3,3 0 0,1 63,2"/>
     <path d="M2,100 A3,3 0 0,1 5,103"/><path d="M66,100 A3,3 0 0,0 63,103"/>
   </svg>`;
@@ -1101,12 +1157,14 @@ function isMatch(guess, name){
 
 function hintLabel(p,puzzle){
   const natTeams=['England','Spain','France','Germany','Italy','Argentina','Brazil','Portugal','Netherlands','Belgium'];
-  return natTeams.includes(puzzle.team)?p.club:p.nat;
+  return (natTeams.includes(puzzle.team)||puzzle.team==='PFA Team of the Season')?p.club:p.nat;
 }
 
 // ── STATE ──
 let S={},usedIds=[],scoreTimer=null;
 let easyMode=localStorage.getItem('lxi_easymode')==='true';
+let darkPitch=localStorage.getItem('lxi_darkpitch')==='true';
+if(darkPitch)document.body.classList.add('dark-pitch');
 let lbData=[],lbMode='overall';
 // ── SCORING ──
 // Each player worth 100 pts, reduced by hints:
@@ -1121,7 +1179,7 @@ const BASE_PER_PLAYER = 100;
 const HINT_COST_NAT   = 40;
 // Each letter costs the same flat amount — no more "free" letters after index 2
 // Nat + 1 letter = 60pts remaining, + 2 letters = 20pts, + 3 letters = 0pts (gone)
-const HINT_COST_LETTER= [30, 25, 20]; // flat 20 after that, handled below
+const HINT_COST_LETTER= [30, 25, 20, 20, 25, 30, 35, 40]; // climbs back up to punish letter-spam past the obvious point
 const REVEAL_PENALTY  = 150;
 
 function getGrade(score){
@@ -1140,7 +1198,7 @@ function getGrade(score){
     'Ronaldo Nazario in 2002. Two goals in the final, zero wasted hints.',
     "Pirlo in midfield. You didn't need to run — you just knew.",
   ])};
-  if(score>=950) return {letter:'A',color:'#B5FF4D',label:pick([
+  if(score>=980) return {letter:'A',color:'#B5FF4D',label:pick([
     'Thierry Henry in 2004. Clinical with barely a wasted touch.',
     'Gerrard on a European night. Almost perfect, truly unforgettable.',
     'Lampard at Chelsea. Composed, consistent, nearly flawless.',
@@ -1154,7 +1212,7 @@ function getGrade(score){
     'Cafu at right back. Attack, defend, assist — barely needed guidance.',
     "Roberto Carlos. You did it with style and barely asked for help.",
   ])};
-  if(score>=750) return {letter:'B',color:'#5bc8ff',label:pick([
+  if(score>=800) return {letter:'B',color:'#5bc8ff',label:pick([
     'Scholes in midfield. Good but needed a nudge here and there.',
     "Gareth Bale at Spurs. Brilliant but needed the right support.",
     'Michael Carrick. Underrated, dependable, quietly effective.',
@@ -1168,7 +1226,7 @@ function getGrade(score){
     "Dirk Kuyt. You ran all day and got most of them. Workmanlike.",
     "Nicky Butt at United. Quietly got on with it. Reliable if unspectacular.",
   ])};
-  if(score>=450) return {letter:'C',color:'#ff9f1c',label:pick([
+  if(score>=550) return {letter:'C',color:'#ff9f1c',label:pick([
     "Zlatan at Barcelona. The talent was obvious but something didn't quite fit.",
     'Beckham at Real Madrid. Brilliant in flashes but needed the system around him.',
     "Shevchenko at Chelsea. Arrived with a big reputation, struggled to deliver.",
@@ -1282,6 +1340,8 @@ function updateModeToggle(){
   const label=document.getElementById('mode-label');
   // Only show toggle on TOTS puzzles
   if(wrap) wrap.style.display=isTotsPuzzle()?'flex':'none';
+  // Showing/hiding this row changes how much vertical space the pitch has
+  requestAnimationFrame(fitPitchHeight);
   if(!toggle)return;
   if(easyMode){
     toggle.style.background='rgba(181,255,77,0.4)';
@@ -1301,13 +1361,48 @@ document.getElementById('mode-toggle').addEventListener('click',()=>{
   easyMode=!easyMode;
   localStorage.setItem('lxi_easymode',String(easyMode));
   updateModeToggle();
-  buildPitch();
-  // Clear all club hints when switching off
-  if(!easyMode){
-    document.querySelectorAll('[id^="tclue-"]').forEach(el=>{el.textContent='';el.style.display='none';});
-  }
+  // No pitch rebuild needed — mode only affects whether tapping shows a club clue.
+  // Rebuilding would wipe solved player names/styling, so just clear any shown clues.
+  document.querySelectorAll('[id^="tclue-"]').forEach(el=>{
+    if(!el.dataset.revealed){el.textContent='';el.style.display='none';}
+  });
   toast(easyMode?'Tap a dot to see their club ⭐':'Hard mode — no hints 🔥','ok');
 });
+
+// Dark neon pitch theme toggle
+function updateThemeBtn(){
+  const btn=document.getElementById('theme-btn');
+  if(!btn)return;
+  btn.classList.toggle('active',darkPitch);
+}
+updateThemeBtn();
+document.getElementById('theme-btn').addEventListener('click',()=>{
+  darkPitch=!darkPitch;
+  localStorage.setItem('lxi_darkpitch',String(darkPitch));
+  document.body.classList.toggle('dark-pitch',darkPitch);
+  updateThemeBtn();
+  // Re-render pitch markings in the new theme colour without losing solved state
+  const bg=document.getElementById('pitch-bg');
+  if(bg)bg.innerHTML=pitchSVG();
+  toast(darkPitch?'Neon pitch theme 🟢':'Classic green pitch ⚽','ok');
+});
+
+function fitPitchHeight(){
+  const wrap=document.getElementById('pitch-wrap');
+  const pitch=document.getElementById('pitch');
+  if(!wrap||!pitch)return;
+  // Reset any previous constraint so we measure the natural width-driven height
+  pitch.style.maxHeight='';
+  const available=wrap.clientHeight;
+  const natural=pitch.offsetHeight;
+  // Only constrain if the natural (width-driven) height would actually overflow
+  // the space we have — this keeps the pitch at full width in the normal case,
+  // and only shrinks it on lineups/screens where an extra row (e.g. the TOTS
+  // easy/hard toggle) genuinely leaves less room.
+  if(natural>available && available>0){
+    pitch.style.maxHeight=available+'px';
+  }
+}
 
 function buildPitch(){
   const pitch=document.getElementById('pitch');
@@ -1320,10 +1415,11 @@ function buildPitch(){
   // Comp + match context below
   document.getElementById('hcomp').textContent=`${S.puzzle.competition} · ${S.puzzle.match}`;
 
-  // Set nationality button label: national teams → hint is club side, club teams → hint is nationality
+  // Set nationality button label: national teams/TOTS → hint is club, club teams → hint is nationality
   const isNatTeam=['England','Spain','France','Germany','Italy','Argentina','Brazil','Portugal','Netherlands','Belgium'].includes(S.puzzle.team);
+  const isTots=S.puzzle.team==='PFA Team of the Season';
   const natBtn=document.getElementById('btn-nat');
-  natBtn.innerHTML=isNatTeam
+  natBtn.innerHTML=(isNatTeam||isTots)
     ? '🏟️ Reveal Club<span class="cost">−40 pts</span>'
     : '🌍 Reveal Nationality<span class="cost">−40 pts</span>';
 
@@ -1336,8 +1432,8 @@ function buildPitch(){
     dot.style.left=pos.x+'%';
     dot.style.top=pos.y+'%';
     if(['4411','4231'].includes(S.puzzle.formation)){
-      dot.style.setProperty('--dot-size','50px');
-      dot.style.setProperty('--dot-font','0.88rem');
+      dot.style.setProperty('--dot-size','clamp(40px,11.5vw,52px)');
+      dot.style.setProperty('--dot-font','clamp(0.92rem,3.3vw,1.25rem)');
     }
     dot.innerHTML=
       `<div class="ring" id="ring-${i}">${p.pos}</div>`+
@@ -1350,6 +1446,8 @@ function buildPitch(){
     dot.addEventListener('click',()=>setActive(i));
     pitch.appendChild(dot);
   });
+  // Check if the pitch needs height-constraining once the browser has laid it out
+  requestAnimationFrame(fitPitchHeight);
 }
 
 function setActive(i){
@@ -1358,10 +1456,10 @@ function setActive(i){
   S.puzzle.players.forEach((_,j)=>{
     const dot=document.getElementById(`dot-${j}`);
     if(dot) dot.classList.toggle('active', j===i);
-    // Easy mode: show club name on tapped dot only
+    // Easy mode: show club name on tapped dot only (never touches a paid/sticky hint)
     if(easyMode&&isTotsPuzzle()){
       const cl=document.getElementById('tclue-'+j);
-      if(cl&&!S.solved.has(j)){
+      if(cl&&!S.solved.has(j)&&!cl.dataset.revealed){
         if(j===i){
           cl.textContent=S.puzzle.players[j].club||'';
           cl.style.display='block';
@@ -1583,9 +1681,10 @@ function doNat(){
   renderScore(false);
   const p=S.puzzle.players[i];
   const lbl=hintLabel(p,S.puzzle);
-  const fl=flag(p.nat);
+  const isClubHint=['England','Spain','France','Germany','Italy','Argentina','Brazil','Portugal','Netherlands','Belgium','PFA Team of the Season'].includes(S.puzzle.team);
+  const fl=isClubHint?'🏟️':flag(p.nat);
   const tclue=document.getElementById(`tclue-${i}`);
-  if(tclue){tclue.textContent=`${fl} ${lbl}`;tclue.style.display='block';}
+  if(tclue){tclue.textContent=`${fl} ${lbl}`;tclue.style.display='block';tclue.dataset.revealed='1';}
   toast(`${fl} ${lbl}`,'info');haptic('hint');soundHint();
   renderUI();
 }
@@ -1852,7 +1951,7 @@ document.getElementById('reveal-one-btn').addEventListener('click',revealOne);
 
 // Reveal All removed — players use individual reveal instead
 
-document.getElementById('again-btn').addEventListener('click',showPicker);
+document.getElementById('again-btn').addEventListener('click',()=>{clearChallengeState();showPicker();});
 document.getElementById('share-card-btn').addEventListener('click',generateShareCard);
 
 // ── PUZZLE PICKER ──
@@ -1958,7 +2057,12 @@ function buildPickerList(){
           slot.style.cssText='width:32px;flex-shrink:0';
         }
       }
-      card.addEventListener('click',()=>{hidePicker();init(p);});
+      card.addEventListener('click',()=>{
+        hidePicker();
+        // Clear any challenge banner/state from a previous challenge link
+        clearChallengeState();
+        init(p);
+      });
       grp.appendChild(card);
     });
     scroll.appendChild(grp);
@@ -1985,7 +2089,7 @@ function teamEmoji(team){
   return TEAM_COLOURS[team]||'⚽';
 }
 
-document.getElementById('back-btn').addEventListener('click', showPicker);
+document.getElementById('back-btn').addEventListener('click', ()=>{clearChallengeState();showPicker();});
 document.getElementById('picker-lb-btn').addEventListener('click',()=>{
   const overlay=document.getElementById('lb-overlay');
   overlay.classList.add('show');
@@ -2607,11 +2711,25 @@ function soundWrong(){playTone(180,0.12,'sawtooth',0.06);}
 function soundWin(){[523,587,659,698,784,880].forEach((f,i)=>setTimeout(()=>playTone(f,0.18),i*70));}
 function soundHint(){playTone(440,0.08,'sine',0.06);}
 
+function clearChallengeState(){
+  // Hide the banner
+  const banner=document.getElementById('challenge-banner');
+  if(banner)banner.style.display='none';
+  // Clear the in-memory challenge so checkChallengeWin etc. stop referencing it
+  challengeParam=null;
+  // Strip challenge/league query params from the URL so a refresh doesn't re-trigger it
+  try{
+    const url=new URL(window.location.href);
+    ['c','s','g','t','n','grp','join','ln'].forEach(k=>url.searchParams.delete(k));
+    window.history.replaceState({},'',url.pathname);
+  }catch(e){}
+}
+
 // On load — check for league join + challenge params
 const urlP=new URLSearchParams(window.location.search);
 const joinId=urlP.get('join'),joinName=urlP.get('ln');
 if(joinId&&joinName){joinLeague(joinId,decodeURIComponent(joinName));S.groupId=joinId;}
-const challengeParam=checkChallengeParam();
+let challengeParam=checkChallengeParam();
 if(challengeParam){
   const puzzle=PUZZLES.find(p=>p.id===challengeParam.puzzleId);
   if(puzzle){hidePicker();init(puzzle);if(challengeParam.groupId)setTimeout(()=>{S.groupId=challengeParam.groupId;},50);setTimeout(()=>showChallengeBanner(challengeParam),200);}
