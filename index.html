@@ -70,11 +70,10 @@ html,body{
 
 /* Pitch fills 100% of #app width — no padding on pitch-wrap */
 
-/* ── TOP CHROME — single row: score (left) · title+comp (flexible middle) · buttons (right) ──
-   All three live inside #scorebar as flex children on ONE line, vertically centred.
-   #hcomp (competition subtitle) sits under the title within the middle column.
-   Below the bar: #mode-toggle-wrap (TOTS only) then #prog-wrap. Nothing absolute
-   except #score-flash (pure visual overlay).
+/* ── TOP CHROME — single row: score (left) · title+comp+toggle (flexible middle) · buttons (right) ──
+   The HARD/EASY toggle lives inside #score-meta directly under the title,
+   so there's no separate row and no gap between title and toggle.
+   Below the bar: #prog-wrap. Nothing absolute except #score-flash.
 */
 #app{position:relative;}
 
@@ -90,7 +89,7 @@ html,body{
   padding-right:12px;
 }
 #score-num{
-  font-family:var(--fh);font-size:2.8rem;font-weight:800;
+  font-family:var(--fh);font-size:3.2rem;font-weight:800;
   line-height:1;color:var(--lime);
   transition:color 0.3s;
 }
@@ -98,15 +97,14 @@ html,body{
 @keyframes scoreUp{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 #score-lbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;font-weight:700;margin-top:1px}
 #score-meta{flex:1;min-width:0}
-#ptitle{font-family:var(--fh);font-weight:700;font-size:1.1rem;line-height:1.25;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-#hcomp{font-size:0.68rem;color:var(--muted);font-weight:500;letter-spacing:0.2px;margin-top:3px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+#ptitle{font-family:var(--fh);font-weight:700;font-size:1.25rem;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+#hcomp{font-size:0.78rem;color:var(--muted);font-weight:500;letter-spacing:0.2px;margin-top:3px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 #hints-used{font-size:0.62rem;color:var(--muted);font-weight:500;margin-top:1px}
 
 /* Buttons column — pinned right, vertically centred on the same row as score+title */
 #header-row{
-  display:flex;align-items:center;gap:6px;
+  display:flex;flex-direction:column;align-items:flex-end;gap:0;
   flex-shrink:0;
-  align-self:flex-start;
 }
 #back-btn{
   background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);
@@ -545,21 +543,23 @@ body.dark-pitch .tag{
       <div id="hints-used"></div>
     </div>
     <div id="header-row">
-      <button id="theme-btn" title="Toggle pitch theme">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
-          <path d="M12 3a9 9 0 0 0 0 18" fill="currentColor"/>
-        </svg>
-      </button>
-      <button id="back-btn">⚽ Lineups</button>
+      <div style="display:flex;gap:6px;justify-content:flex-end">
+        <button id="theme-btn" title="Toggle pitch theme">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 3a9 9 0 0 0 0 18" fill="currentColor"/>
+          </svg>
+        </button>
+        <button id="back-btn">⚽ Lineups</button>
+      </div>
+      <div id="mode-toggle-wrap" style="display:none;align-items:center;justify-content:flex-end;gap:6px;margin-top:6px">
+        <span id="mode-label" style="font-family:var(--fh);font-size:0.66rem;font-weight:700;color:var(--muted)">HARD</span>
+        <div id="mode-toggle" role="switch" aria-checked="false" style="width:36px;height:20px;border-radius:10px;background:rgba(255,255,255,0.15);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0">
+          <div id="mode-knob" style="position:absolute;top:2.5px;left:2.5px;width:15px;height:15px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>
+        </div>
+        <span style="font-family:var(--fh);font-size:0.66rem;font-weight:700;color:var(--lime)">EASY</span>
+      </div>
     </div>
-  </div>
-  <div id="mode-toggle-wrap" style="display:none;align-items:center;justify-content:flex-end;gap:6px;padding:3px 12px 0;flex-shrink:0">
-    <span id="mode-label" style="font-family:var(--fh);font-size:0.66rem;font-weight:700;color:var(--muted)">HARD</span>
-    <div id="mode-toggle" role="switch" aria-checked="false" style="width:36px;height:20px;border-radius:10px;background:rgba(255,255,255,0.15);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0">
-      <div id="mode-knob" style="position:absolute;top:2.5px;left:2.5px;width:15px;height:15px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>
-    </div>
-    <span style="font-family:var(--fh);font-size:0.66rem;font-weight:700;color:var(--lime)">EASY</span>
   </div>
   <div id="prog-wrap">
     <div id="prog-track"><div id="prog-fill"></div></div>
@@ -1473,10 +1473,8 @@ function updateModeToggle(){
   const toggle=document.getElementById('mode-toggle');
   const knob=document.getElementById('mode-knob');
   const label=document.getElementById('mode-label');
-  // Only show toggle on TOTS puzzles
-  if(wrap) wrap.style.display=isTotsPuzzle()?'flex':'none';
-  // Showing/hiding this row changes how much vertical space the pitch has
-  requestAnimationFrame(fitPitchHeight);
+  // Toggle is now inside #score-meta so always show it (doesn't affect pitch height)
+  if(wrap) wrap.style.display='flex';
   if(!toggle)return;
   if(easyMode){
     toggle.style.background='rgba(181,255,77,0.4)';
@@ -1501,7 +1499,7 @@ document.getElementById('mode-toggle').addEventListener('click',()=>{
   document.querySelectorAll('[id^="tclue-"]').forEach(el=>{
     if(!el.dataset.revealed){el.textContent='';el.style.display='none';}
   });
-  toast(easyMode?'Tap a dot to see their club ⭐':'Hard mode — no hints 🔥','ok');
+  toast(easyMode?'Easy mode — tap a dot for a free hint ⭐':'Hard mode — no free hints 🔥','ok');
 });
 
 // Dark neon pitch theme toggle
@@ -1591,12 +1589,15 @@ function setActive(i){
   S.puzzle.players.forEach((_,j)=>{
     const dot=document.getElementById(`dot-${j}`);
     if(dot) dot.classList.toggle('active', j===i);
-    // Easy mode: show club name on tapped dot only (never touches a paid/sticky hint)
-    if(easyMode&&isTotsPuzzle()){
+    // Easy mode: tap a dot to see a free hint (club on nat/TOTS puzzles, nationality on club puzzles)
+    if(easyMode){
       const cl=document.getElementById('tclue-'+j);
       if(cl&&!S.solved.has(j)&&!cl.dataset.revealed){
         if(j===i){
-          cl.textContent=S.puzzle.players[j].club||'';
+          const p=S.puzzle.players[j];
+          const natTeams=['England','Spain','France','Germany','Italy','Argentina','Brazil','Portugal','Netherlands','Belgium'];
+          const showClub=natTeams.includes(S.puzzle.team)||S.puzzle.team==='PFA Team of the Season';
+          cl.textContent=showClub?(p.club||''):(p.nat?flag(p.nat)+' '+p.nat:'');
           cl.style.display='block';
         } else {
           cl.textContent='';
