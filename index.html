@@ -358,11 +358,11 @@ body.dark-pitch .tag{
 #toast.warm{background:#ff9f1c;color:#1a0a00}
 
 /* ── WIN OVERLAY ── */
-#win{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.96);z-index:50;align-items:center;justify-content:center;backdrop-filter:blur(8px);overflow-y:auto;padding:16px 0}
+#win{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.96);z-index:50;align-items:flex-start;justify-content:center;backdrop-filter:blur(8px);overflow-y:auto;padding:24px 0 40px}
 #win.show{display:flex}
-.wcard{background:#0f1f33;border:1.5px solid rgba(181,255,77,0.25);border-radius:20px;padding:20px 18px 18px;text-align:center;max-width:380px;width:93%;box-shadow:0 0 60px rgba(181,255,77,0.12)}
+.wcard{background:#0f1f33;border:1.5px solid rgba(181,255,77,0.25);border-radius:20px;padding:16px 18px 16px;text-align:center;max-width:380px;width:93%;box-shadow:0 0 60px rgba(181,255,77,0.12)}
 .wgrade-block{margin-bottom:8px}
-.wgrade-letter{font-family:var(--fh);font-size:5rem;font-weight:800;line-height:1;transition:color 0.3s}
+.wgrade-letter{font-family:var(--fh);font-size:4.2rem;font-weight:800;line-height:1;transition:color 0.3s}
 .wgrade-label{font-family:var(--fh);font-size:1.05rem;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 .wsub{color:var(--muted);font-size:0.7rem;margin-bottom:8px;line-height:1.4}
 .wscore-block{margin-bottom:10px}
@@ -517,13 +517,10 @@ body.dark-pitch .tag{
     </div>
     <div id="daily-card-streak-msg" style="display:none;font-family:var(--fh);font-weight:700;font-size:0.74rem;color:var(--lime);margin-top:8px;padding-top:8px;border-top:1px solid rgba(181,255,77,0.2)"></div>
   </div>
-  <div id="picker-league-banner" style="display:none;margin:6px 12px 0;padding:8px 12px;background:rgba(181,255,77,0.08);border:1px solid rgba(181,255,77,0.2);border-radius:10px;cursor:pointer" onclick="updateGroupTab();openLeaderboard()">
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div id="plb-name" style="font-family:var(--fh);font-size:0.9rem;font-weight:800;color:var(--lime)">🏆 My League</div>
-        <div id="plb-sub" style="font-size:0.65rem;color:var(--muted);margin-top:1px">Tap to see standings</div>
-      </div>
-      <div style="font-size:0.7rem;color:var(--muted)">›</div>
+  <div id="picker-league-banner" style="display:none;margin:0 14px 14px;padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;cursor:pointer" onclick="updateGroupTab();openLeaderboard()">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <div id="plb-name" style="font-family:var(--fh);font-size:0.78rem;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🏆 My League</div>
+      <div id="plb-sub" style="font-size:0.68rem;color:var(--muted);white-space:nowrap;flex-shrink:0">Tap to see standings ›</div>
     </div>
   </div>
   <div id="picker-stats-bar" style="display:none;padding:6px 14px 8px;font-size:0.72rem;border-bottom:1px solid rgba(255,255,255,0.05);gap:14px;align-items:center"></div>
@@ -1067,6 +1064,58 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"LM","name":"Leonardo","nat":"Brazil","club":"AC Milan"},
   {"pos":"ST","name":"Ronaldo","nat":"Brazil","club":"Inter Milan"},
   {"pos":"ST","name":"Bebeto","nat":"Brazil","club":"Deportivo La Coruna"}
+]},
+{"id":51,"team":"Aston Villa","competition":"League Cup","match":"League Cup Final vs Leeds United (won 3-0, Wembley)","formation":"442","year":1996,"difficulty":3,"players":[
+  {"pos":"GK","name":"Mark Bosnich","nat":"Australia","club":"Aston Villa"},
+  {"pos":"RB","name":"Gary Charles","nat":"England","club":"Aston Villa"},
+  {"pos":"CB","name":"Gareth Southgate","nat":"England","club":"Aston Villa"},
+  {"pos":"CB","name":"Paul McGrath","nat":"Ireland","club":"Aston Villa"},
+  {"pos":"LB","name":"Alan Wright","nat":"England","club":"Aston Villa"},
+  {"pos":"RM","name":"Ian Taylor","nat":"England","club":"Aston Villa"},
+  {"pos":"CM","name":"Andy Townsend","nat":"Ireland","club":"Aston Villa"},
+  {"pos":"CM","name":"Mark Draper","nat":"England","club":"Aston Villa"},
+  {"pos":"LM","name":"Ugo Ehiogu","nat":"England","club":"Aston Villa"},
+  {"pos":"ST","name":"Savo Milosevic","nat":"Serbia","club":"Aston Villa"},
+  {"pos":"ST","name":"Dwight Yorke","nat":"Trinidad and Tobago","club":"Aston Villa"}
+]},
+{"id":52,"team":"Birmingham City","competition":"League Cup","match":"League Cup Final vs Arsenal (won 2-1, Wembley)","formation":"442","year":2011,"difficulty":3,"players":[
+  {"pos":"GK","name":"Ben Foster","nat":"England","club":"Birmingham City"},
+  {"pos":"RB","name":"Stephen Carr","nat":"Ireland","club":"Birmingham City"},
+  {"pos":"CB","name":"Roger Johnson","nat":"England","club":"Birmingham City"},
+  {"pos":"CB","name":"Liam Ridgewell","nat":"England","club":"Birmingham City"},
+  {"pos":"LB","name":"Stephen Jordan","nat":"England","club":"Birmingham City"},
+  {"pos":"RM","name":"Sebastian Larsson","nat":"Sweden","club":"Birmingham City"},
+  {"pos":"CM","name":"Lee Bowyer","nat":"England","club":"Birmingham City"},
+  {"pos":"CM","name":"Craig Gardner","nat":"England","club":"Birmingham City"},
+  {"pos":"LM","name":"Barry Ferguson","nat":"Scotland","club":"Birmingham City"},
+  {"pos":"ST","name":"Keith Fahey","nat":"Ireland","club":"Birmingham City"},
+  {"pos":"ST","name":"Nikola Zigic","nat":"Serbia","club":"Birmingham City"}
+]},
+{"id":53,"team":"Newcastle United","competition":"Champions League","match":"Champions League Group Stage vs Barcelona (won 3-2, Asprilla hat-trick)","formation":"442","year":1997,"difficulty":4,"players":[
+  {"pos":"GK","name":"Shay Given","nat":"Ireland","club":"Newcastle United"},
+  {"pos":"RB","name":"Warren Barton","nat":"England","club":"Newcastle United"},
+  {"pos":"CB","name":"Philippe Albert","nat":"Belgium","club":"Newcastle United"},
+  {"pos":"CB","name":"Steve Watson","nat":"England","club":"Newcastle United"},
+  {"pos":"LB","name":"John Beresford","nat":"England","club":"Newcastle United"},
+  {"pos":"RM","name":"Keith Gillespie","nat":"Northern Ireland","club":"Newcastle United"},
+  {"pos":"CM","name":"Rob Lee","nat":"England","club":"Newcastle United"},
+  {"pos":"CM","name":"David Batty","nat":"England","club":"Newcastle United"},
+  {"pos":"LM","name":"John Barnes","nat":"England","club":"Newcastle United"},
+  {"pos":"ST","name":"Faustino Asprilla","nat":"Colombia","club":"Newcastle United"},
+  {"pos":"ST","name":"Jon Dahl Tomasson","nat":"Denmark","club":"Newcastle United"}
+]},
+{"id":54,"team":"Manchester United","competition":"Premier League","match":"Title-clinching win vs Tottenham, final day of Treble season (2-1)","formation":"442","year":1999,"difficulty":2,"players":[
+  {"pos":"GK","name":"Peter Schmeichel","nat":"Denmark","club":"Manchester United"},
+  {"pos":"RB","name":"Gary Neville","nat":"England","club":"Manchester United"},
+  {"pos":"CB","name":"Ronny Johnsen","nat":"Norway","club":"Manchester United"},
+  {"pos":"CB","name":"David May","nat":"England","club":"Manchester United"},
+  {"pos":"LB","name":"Denis Irwin","nat":"Ireland","club":"Manchester United"},
+  {"pos":"RM","name":"David Beckham","nat":"England","club":"Manchester United"},
+  {"pos":"CM","name":"Roy Keane","nat":"Ireland","club":"Manchester United"},
+  {"pos":"CM","name":"Paul Scholes","nat":"England","club":"Manchester United"},
+  {"pos":"LM","name":"Ryan Giggs","nat":"Wales","club":"Manchester United"},
+  {"pos":"ST","name":"Teddy Sheringham","nat":"England","club":"Manchester United"},
+  {"pos":"ST","name":"Dwight Yorke","nat":"Trinidad and Tobago","club":"Manchester United"}
 ]}];
 
 const FLAGS={"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Republic of Ireland":"🇮🇪","France":"🇫🇷","Spain":"🇪🇸","Germany":"🇩🇪","Italy":"🇮🇹","Netherlands":"🇳🇱","Portugal":"🇵🇹","Brazil":"🇧🇷","Argentina":"🇦🇷","Australia":"🇦🇺","Norway":"🇳🇴","Sweden":"🇸🇪","Denmark":"🇩🇰","Finland":"🇫🇮","Poland":"🇵🇱","Belgium":"🇧🇪","Ivory Coast":"🇨🇮","Cameroon":"🇨🇲","Mali":"🇲🇱","Ghana":"🇬🇭","Algeria":"🇩🇿","Nigeria":"🇳🇬","Japan":"🇯🇵","Czech Republic":"🇨🇿","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹","Austria":"🇦🇹","Morocco":"🇲🇦","Senegal":"🇸🇳","South Korea":"🇰🇷","Croatia":"🇭🇷","Switzerland":"🇨🇭"};
@@ -2145,8 +2194,8 @@ function renderDailyCard(){
   const done=hasCompletedTodaysDaily();
   const state=loadDailyState();
   sub.textContent = done
-    ? `Day ${dayNum} complete ✓ — come back tomorrow`
-    : `Day ${dayNum} · ${puzzle.team} ${puzzle.year}`;
+    ? `New puzzle every day · Day ${dayNum} complete ✓`
+    : `New puzzle every day · #${dayNum} · ${puzzle.team} ${puzzle.year}`;
   if(state.streak>0){
     pill.style.display='inline-block';
     pill.innerHTML = `🔥 ${state.streak}`;
@@ -2186,9 +2235,9 @@ function buildPickerList(){
       if(typeof lbData!=='undefined'&&lbData.length){
         const members=new Set(lbData.filter(e=>e.group_id===myLgPicker.id).map(e=>e.name));
         const count=members.size;
-        plbSub.textContent=count>0?`${count} player${count!==1?'s':''} · Tap to see standings`:'Tap to see standings';
+        plbSub.textContent=count>0?`${count} player${count!==1?'s':''} ›`:'Standings ›';
       } else {
-        plbSub.textContent='Tap to see standings';
+        plbSub.textContent='Standings ›';
       }
     }
   } else if(leagueBanner){
@@ -2244,7 +2293,7 @@ function buildPickerList(){
                    ...[...groups.keys()].filter(c => !COMP_ORDER.includes(c))];
 
   ordered.forEach(comp => {
-    const puzzles = groups.get(comp);
+    const puzzles = groups.get(comp).slice().sort((a,b) => a.year - b.year);
     const grp = document.createElement('div');
     grp.className = 'picker-group';
     // Completion count for this group (reuses existing per-puzzle stats — no new storage)
