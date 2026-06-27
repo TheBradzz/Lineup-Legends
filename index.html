@@ -361,6 +361,19 @@ body.dark-pitch .tag{
 #win{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.96);z-index:50;align-items:flex-start;justify-content:center;backdrop-filter:blur(8px);overflow-y:auto;padding:24px 0 40px}
 #win.show{display:flex}
 #help-modal{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.96);z-index:90;align-items:flex-start;justify-content:center;backdrop-filter:blur(8px);overflow-y:auto;padding:24px 0 40px}
+#badge-modal{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.96);z-index:91;align-items:flex-start;justify-content:center;backdrop-filter:blur(8px);overflow-y:auto;padding:24px 0 40px}
+#badge-modal.show{display:flex}
+.badge-chip{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;filter:grayscale(1);opacity:0.45;transition:transform 0.15s}
+.badge-chip.unlocked{background:rgba(181,255,77,0.12);border-color:rgba(181,255,77,0.45);filter:none;opacity:1}
+.badge-chip:active{transform:scale(0.92)}
+.badge-icon{font-size:1.15rem}
+.badge-detail-title{font-family:var(--fh);font-weight:800;font-size:1.15rem;color:var(--white);text-align:center;margin-bottom:4px}
+.badge-detail-desc{font-size:0.78rem;color:rgba(255,255,255,0.7);text-align:center;margin-bottom:16px;line-height:1.4}
+.badge-detail-icon{font-size:3rem;text-align:center;display:block;margin-bottom:10px}
+.badge-progress-bar{height:8px;border-radius:5px;background:rgba(255,255,255,0.08);overflow:hidden;margin-bottom:6px}
+.badge-progress-fill{height:100%;background:var(--lime);border-radius:5px;transition:width 0.3s}
+.badge-progress-label{font-size:0.7rem;color:var(--muted);text-align:center}
+.badge-status-pill{display:block;margin:14px auto 0;text-align:center;font-family:var(--fh);font-weight:700;font-size:0.8rem;padding:6px 14px;border-radius:20px;width:fit-content}
 #help-modal.show{display:flex}
 .help-card{background:#0f1f33;border:1.5px solid rgba(181,255,77,0.25);border-radius:20px;padding:22px 20px;text-align:left;max-width:380px;width:88%;box-shadow:0 0 60px rgba(181,255,77,0.12)}
 .help-title{font-family:var(--fh);font-weight:800;font-size:1.3rem;color:var(--white);text-align:center;margin-bottom:18px}
@@ -540,6 +553,7 @@ body.dark-pitch .tag{
     </div>
   </div>
   <div id="picker-stats-bar" style="display:none;padding:6px 14px 8px;font-size:0.72rem;border-bottom:1px solid rgba(255,255,255,0.05);gap:14px;align-items:center"></div>
+  <div id="picker-badge-row" style="display:none;padding:8px 14px 10px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.05)"></div>
   <div id="picker-filter-row"></div>
   <div id="picker-scroll"></div>
 </div>
@@ -567,6 +581,12 @@ body.dark-pitch .tag{
       <div class="help-section-body">A new puzzle every day. Complete it on consecutive days to build a streak — miss a day and it resets.</div>
     </div>
     <button id="help-close-btn">Got it 👍</button>
+  </div>
+</div>
+
+<div id="badge-modal">
+  <div class="help-card" id="badge-modal-content">
+    <!-- Filled dynamically by showBadgeDetail() -->
   </div>
 </div>
 
@@ -716,13 +736,18 @@ function joinLeague(id,name){const ex=getMyLeague();if(!ex||ex.role!=='owner')se
 // ── PERSONAL STATS (localStorage) ──
 const STATS_KEY='lxi_stats_v1';
 function loadStats(){try{const r=localStorage.getItem(STATS_KEY);return r?JSON.parse(r):{}}catch(e){return {}}}
-function saveStatForPuzzle(puzzleId,grade,score,time){
+function saveStatForPuzzle(puzzleId,grade,score,time,noHints){
   try{
     const stats=loadStats();
     const order=['F','D','C','B','A','S'];
     const ex=stats[puzzleId];
     if(!ex||order.indexOf(grade)>order.indexOf(ex.grade)){
-      stats[puzzleId]={grade,score,time,date:Date.now()};
+      stats[puzzleId]={grade,score,time,date:Date.now(),noHints:!!noHints};
+      localStorage.setItem(STATS_KEY,JSON.stringify(stats));
+    } else if(ex && noHints && !ex.noHints){
+      // Even if this attempt's grade isn't a new best, still record that a hint-free
+      // completion happened at least once — badge progress shouldn't regress
+      ex.noHints=true;
       localStorage.setItem(STATS_KEY,JSON.stringify(stats));
     }
   }catch(e){
@@ -741,6 +766,47 @@ function getSummaryStats(){
   const bestPuzzle=PUZZLES.find(p=>String(p.id)===best[0]);
   return{played:entries.length,total:PUZZLES.length,avgGrade,bestGrade:best[1].grade,
     bestPuzzle:bestPuzzle?`${bestPuzzle.team} ${bestPuzzle.year}`:'',bestScore:best[1].score};
+}
+
+// ── BADGES ──
+// Each badge is derived purely from existing stats — no new storage beyond
+// the noHints flag added above. Recalculated fresh every time it's displayed.
+const BADGES=[
+  {id:'pl10',icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',name:'Prem Devotee',desc:'Complete 10 Premier League lineups',
+    check:(stats)=>{
+      const playedIds=new Set(Object.keys(stats));
+      const count=PUZZLES.filter(p=>p.competition==='Premier League' && playedIds.has(String(p.id))).length;
+      return {unlocked:count>=10, progress:count, target:10};
+    }},
+  {id:'wc',icon:'🌍',name:'World Cup Historian',desc:'Complete every World Cup lineup',
+    check:(stats)=>{
+      const wcPuzzles=PUZZLES.filter(p=>p.match.includes('World Cup'));
+      const playedIds=new Set(Object.keys(stats));
+      const count=wcPuzzles.filter(p=>playedIds.has(String(p.id))).length;
+      return {unlocked:count>=wcPuzzles.length && wcPuzzles.length>0, progress:count, target:wcPuzzles.length};
+    }},
+  {id:'purist',icon:'🎯',name:'Purist',desc:'Complete 5 lineups with zero hints used',
+    check:(stats)=>{
+      const count=Object.values(stats).filter(e=>e.noHints).length;
+      return {unlocked:count>=5, progress:count, target:5};
+    }},
+  {id:'elite',icon:'⭐',name:'Elite Score',desc:'Score 900+ points on any single lineup',
+    check:(stats)=>{
+      const best=Object.values(stats).reduce((max,e)=>Math.max(max,e.score||0),0);
+      return {unlocked:best>=900, progress:Math.min(best,900), target:900};
+    }},
+  {id:'england',icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',name:'Three Lions Faithful',desc:'Complete every England lineup',
+    check:(stats)=>{
+      const engPuzzles=PUZZLES.filter(p=>p.team==='England');
+      const playedIds=new Set(Object.keys(stats));
+      const count=engPuzzles.filter(p=>playedIds.has(String(p.id))).length;
+      return {unlocked:count>=engPuzzles.length && engPuzzles.length>0, progress:count, target:engPuzzles.length};
+    }}
+];
+
+function getBadgeStatuses(){
+  const stats=loadStats();
+  return BADGES.map(b=>({...b, ...b.check(stats)}));
 }
 
 // ── SUPABASE ── (defined first so all functions can use it)
@@ -1406,6 +1472,123 @@ const PUZZLES=[{"id":1,"team":"Leeds United","competition":"Champions League","m
   {"pos":"LM","name":"Carlos Alberto","nat":"Brazil","club":"Porto"},
   {"pos":"AM","name":"Deco","nat":"Portugal","club":"Porto"},
   {"pos":"ST","name":"Derlei","nat":"Portugal","club":"Porto"}
+]},
+{"id":74,"team":"Ajax","competition":"Eredivisie","match":"Eredivisie Title-Winning Season Under Erik ten Hag (2021-22)","formation":"4231","year":2022,"difficulty":3,"players":[
+  {"pos":"GK","name":"Andre Onana","nat":"Cameroon","club":"Ajax"},
+  {"pos":"RB","name":"Noussair Mazraoui","nat":"Morocco","club":"Ajax"},
+  {"pos":"CB","name":"Jurrien Timber","nat":"Netherlands","club":"Ajax"},
+  {"pos":"CB","name":"Lisandro Martinez","nat":"Argentina","club":"Ajax"},
+  {"pos":"LB","name":"Daley Blind","nat":"Netherlands","club":"Ajax"},
+  {"pos":"DM","name":"Edson Alvarez","nat":"Mexico","club":"Ajax"},
+  {"pos":"DM","name":"Ryan Gravenberch","nat":"Netherlands","club":"Ajax"},
+  {"pos":"RW","name":"Steven Berghuis","nat":"Netherlands","club":"Ajax"},
+  {"pos":"AM","name":"Dusan Tadic","nat":"Serbia","club":"Ajax"},
+  {"pos":"LW","name":"Antony","nat":"Brazil","club":"Ajax"},
+  {"pos":"ST","name":"Sebastien Haller","nat":"Ivory Coast","club":"Ajax"}
+]},
+{"id":75,"team":"Sporting CP","competition":"Primeira Liga","match":"Primeira Liga Title Win, Ending a 19-Year Wait (2020-21)","formation":"352","year":2021,"difficulty":4,"players":[
+  {"pos":"GK","name":"Antonio Adan","nat":"Spain","club":"Sporting CP"},
+  {"pos":"CB","name":"Pedro Porro","nat":"Spain","club":"Sporting CP"},
+  {"pos":"CB","name":"Sebastian Coates","nat":"Uruguay","club":"Sporting CP"},
+  {"pos":"CB","name":"Luis Neto","nat":"Portugal","club":"Sporting CP"},
+  {"pos":"RWB","name":"Zouhair Feddal","nat":"Morocco","club":"Sporting CP"},
+  {"pos":"CM","name":"Joao Palhinha","nat":"Portugal","club":"Sporting CP"},
+  {"pos":"CM","name":"Wendel","nat":"Brazil","club":"Sporting CP"},
+  {"pos":"CM","name":"Joao Mario","nat":"Portugal","club":"Sporting CP"},
+  {"pos":"LWB","name":"Nuno Mendes","nat":"Portugal","club":"Sporting CP"},
+  {"pos":"ST","name":"Pedro Goncalves","nat":"Portugal","club":"Sporting CP"},
+  {"pos":"ST","name":"Tiago Tomas","nat":"Portugal","club":"Sporting CP"}
+]},
+{"id":76,"team":"Montpellier","competition":"Ligue 1","match":"Shock Ligue 1 Title Win, Giroud's Breakout Season Before Arsenal (2011-12)","formation":"433","year":2012,"difficulty":4,"players":[
+  {"pos":"GK","name":"Geoffrey Jourdren","nat":"France","club":"Montpellier"},
+  {"pos":"RB","name":"Garry Bocaly","nat":"France","club":"Montpellier"},
+  {"pos":"CB","name":"Vitorino Hilton","nat":"Brazil","club":"Montpellier"},
+  {"pos":"CB","name":"Mapou Yanga-Mbiwa","nat":"France","club":"Montpellier"},
+  {"pos":"LB","name":"Henri Bedimo","nat":"Cameroon","club":"Montpellier"},
+  {"pos":"CM","name":"Benjamin Stambouli","nat":"France","club":"Montpellier"},
+  {"pos":"CM","name":"Younes Belhanda","nat":"Morocco","club":"Montpellier"},
+  {"pos":"CM","name":"Remy Cabella","nat":"France","club":"Montpellier"},
+  {"pos":"RW","name":"John Utaka","nat":"Nigeria","club":"Montpellier"},
+  {"pos":"ST","name":"Olivier Giroud","nat":"France","club":"Montpellier"},
+  {"pos":"LW","name":"Souleymane Camara","nat":"France","club":"Montpellier"}
+]},
+{"id":77,"team":"Argentina","competition":"International","match":"FIFA World Cup Final vs West Germany (won 3-2, Maradona's first title)","formation":"352","year":1986,"difficulty":4,"players":[
+  {"pos":"GK","name":"Nery Pumpido","nat":"Argentina","club":"River Plate"},
+  {"pos":"CB","name":"Jose Luis Brown","nat":"Argentina","club":"Estudiantes"},
+  {"pos":"CB","name":"Jose Luis Cuciuffo","nat":"Argentina","club":"Velez Sarsfield"},
+  {"pos":"CB","name":"Oscar Ruggeri","nat":"Argentina","club":"River Plate"},
+  {"pos":"RWB","name":"Ricardo Giusti","nat":"Argentina","club":"Independiente"},
+  {"pos":"CM","name":"Sergio Batista","nat":"Argentina","club":"River Plate"},
+  {"pos":"CM","name":"Hector Enrique","nat":"Argentina","club":"River Plate"},
+  {"pos":"CM","name":"Jorge Burruchaga","nat":"Argentina","club":"Nantes"},
+  {"pos":"LWB","name":"Julio Olarticoechea","nat":"Argentina","club":"Boca Juniors"},
+  {"pos":"ST","name":"Jorge Valdano","nat":"Argentina","club":"Real Madrid"},
+  {"pos":"ST","name":"Diego Maradona","nat":"Argentina","club":"Napoli"}
+]},
+{"id":78,"team":"West Germany","competition":"International","match":"FIFA World Cup Final vs Argentina (won 1-0, Brehme penalty, Beckenbauer's revenge)","formation":"352","year":1990,"difficulty":4,"players":[
+  {"pos":"GK","name":"Bodo Illgner","nat":"West Germany","club":"1. FC Koln"},
+  {"pos":"CB","name":"Thomas Berthold","nat":"West Germany","club":"AS Roma"},
+  {"pos":"CB","name":"Klaus Augenthaler","nat":"West Germany","club":"Bayern Munich"},
+  {"pos":"CB","name":"Jurgen Kohler","nat":"West Germany","club":"Bayern Munich"},
+  {"pos":"RWB","name":"Guido Buchwald","nat":"West Germany","club":"VfB Stuttgart"},
+  {"pos":"CM","name":"Thomas Hassler","nat":"West Germany","club":"1. FC Koln"},
+  {"pos":"CM","name":"Lothar Matthaus","nat":"West Germany","club":"Inter Milan"},
+  {"pos":"CM","name":"Pierre Littbarski","nat":"West Germany","club":"1. FC Koln"},
+  {"pos":"LWB","name":"Andreas Brehme","nat":"West Germany","club":"Inter Milan"},
+  {"pos":"ST","name":"Rudi Voller","nat":"West Germany","club":"AS Roma"},
+  {"pos":"ST","name":"Jurgen Klinsmann","nat":"West Germany","club":"Inter Milan"}
+]},
+{"id":79,"team":"France","competition":"International","match":"FIFA World Cup Final vs Croatia (won 4-2, Mbappe becomes 2nd teenager to score in a final)","formation":"433","year":2018,"difficulty":2,"players":[
+  {"pos":"GK","name":"Hugo Lloris","nat":"France","club":"Tottenham"},
+  {"pos":"RB","name":"Benjamin Pavard","nat":"France","club":"VfB Stuttgart"},
+  {"pos":"CB","name":"Raphael Varane","nat":"France","club":"Real Madrid"},
+  {"pos":"CB","name":"Samuel Umtiti","nat":"France","club":"Barcelona"},
+  {"pos":"LB","name":"Lucas Hernandez","nat":"France","club":"Atletico Madrid"},
+  {"pos":"CM","name":"N'Golo Kante","nat":"France","club":"Chelsea"},
+  {"pos":"CM","name":"Paul Pogba","nat":"France","club":"Manchester United"},
+  {"pos":"CM","name":"Blaise Matuidi","nat":"France","club":"Juventus"},
+  {"pos":"RW","name":"Antoine Griezmann","nat":"France","club":"Atletico Madrid"},
+  {"pos":"ST","name":"Olivier Giroud","nat":"France","club":"Chelsea"},
+  {"pos":"LW","name":"Kylian Mbappe","nat":"France","club":"Paris Saint-Germain"}
+]},
+{"id":80,"team":"Spain","competition":"International","match":"FIFA World Cup Final vs Netherlands (won 1-0 AET, Iniesta's 116th-minute winner)","formation":"4231","year":2010,"difficulty":2,"players":[
+  {"pos":"GK","name":"Iker Casillas","nat":"Spain","club":"Real Madrid"},
+  {"pos":"RB","name":"Sergio Ramos","nat":"Spain","club":"Real Madrid"},
+  {"pos":"CB","name":"Gerard Pique","nat":"Spain","club":"Barcelona"},
+  {"pos":"CB","name":"Carles Puyol","nat":"Spain","club":"Barcelona"},
+  {"pos":"LB","name":"Joan Capdevila","nat":"Spain","club":"Villarreal"},
+  {"pos":"DM","name":"Xabi Alonso","nat":"Spain","club":"Real Madrid"},
+  {"pos":"DM","name":"Sergio Busquets","nat":"Spain","club":"Barcelona"},
+  {"pos":"RW","name":"Pedro","nat":"Spain","club":"Barcelona"},
+  {"pos":"AM","name":"Xavi","nat":"Spain","club":"Barcelona"},
+  {"pos":"LW","name":"Andres Iniesta","nat":"Spain","club":"Barcelona"},
+  {"pos":"ST","name":"David Villa","nat":"Spain","club":"Valencia"}
+]},
+{"id":81,"team":"Ivory Coast","competition":"International","match":"AFCON Final vs Nigeria (won 2-1, host nation comeback after sacking their coach mid-tournament)","formation":"433","year":2024,"difficulty":4,"players":[
+  {"pos":"GK","name":"Yahia Fofana","nat":"Ivory Coast","club":"Angers"},
+  {"pos":"RB","name":"Serge Aurier","nat":"Ivory Coast","club":"Galatasaray"},
+  {"pos":"CB","name":"Odilon Kossounou","nat":"Ivory Coast","club":"Bayer Leverkusen"},
+  {"pos":"CB","name":"Evan Ndicka","nat":"Ivory Coast","club":"AS Roma"},
+  {"pos":"LB","name":"Ghislain Konan","nat":"Ivory Coast","club":"Reims"},
+  {"pos":"CM","name":"Jean-Michael Seri","nat":"Ivory Coast","club":"Hatayspor"},
+  {"pos":"CM","name":"Franck Kessie","nat":"Ivory Coast","club":"Al-Ahli"},
+  {"pos":"CM","name":"Seko Fofana","nat":"Ivory Coast","club":"Al-Nassr"},
+  {"pos":"RW","name":"Simon Adingra","nat":"Ivory Coast","club":"Brighton"},
+  {"pos":"ST","name":"Sebastien Haller","nat":"Ivory Coast","club":"Borussia Dortmund"},
+  {"pos":"LW","name":"Max Gradel","nat":"Ivory Coast","club":"Sivasspor"}
+]},
+{"id":82,"team":"Nigeria","competition":"International","match":"AFCON Final vs Ivory Coast (lost 2-1, Osimhen and co fall just short)","formation":"4141","year":2024,"difficulty":4,"players":[
+  {"pos":"GK","name":"Stanley Nwabali","nat":"Nigeria","club":"Chippa United"},
+  {"pos":"RB","name":"Ola Aina","nat":"Nigeria","club":"Nottingham Forest"},
+  {"pos":"CB","name":"William Troost-Ekong","nat":"Nigeria","club":"PAOK"},
+  {"pos":"CB","name":"Calvin Bassey","nat":"Nigeria","club":"Fulham"},
+  {"pos":"LB","name":"Israel Ajayi","nat":"Nigeria","club":"Real Sociedad"},
+  {"pos":"DM","name":"Frank Onyeka","nat":"Nigeria","club":"Brentford"},
+  {"pos":"RM","name":"Samuel Chukwueze","nat":"Nigeria","club":"AC Milan"},
+  {"pos":"CM","name":"Alex Iwobi","nat":"Nigeria","club":"Fulham"},
+  {"pos":"LM","name":"Zaidu Sanusi","nat":"Nigeria","club":"Porto"},
+  {"pos":"AM","name":"Ademola Lookman","nat":"Nigeria","club":"Atalanta"},
+  {"pos":"ST","name":"Victor Osimhen","nat":"Nigeria","club":"Napoli"}
 ]}];
 
 const FLAGS={"England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Republic of Ireland":"🇮🇪","France":"🇫🇷","Spain":"🇪🇸","Germany":"🇩🇪","Italy":"🇮🇹","Netherlands":"🇳🇱","Portugal":"🇵🇹","Brazil":"🇧🇷","Argentina":"🇦🇷","Australia":"🇦🇺","Norway":"🇳🇴","Sweden":"🇸🇪","Denmark":"🇩🇰","Finland":"🇫🇮","Poland":"🇵🇱","Belgium":"🇧🇪","Ivory Coast":"🇨🇮","Cameroon":"🇨🇲","Mali":"🇲🇱","Ghana":"🇬🇭","Algeria":"🇩🇿","Nigeria":"🇳🇬","Japan":"🇯🇵","Czech Republic":"🇨🇿","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹","Austria":"🇦🇹","Morocco":"🇲🇦","Senegal":"🇸🇳","South Korea":"🇰🇷","Croatia":"🇭🇷","Switzerland":"🇨🇭"};
@@ -1576,14 +1759,20 @@ const DAILY_QUEUE = [
   29, // Day 10: Brazil 2002 WC Final vs Germany (Ronaldo brace)
   25, // Day 11: England 2002 WC QF vs Brazil (Ronaldinho lob)
   27, // Day 12: Italy 2006 WC Final vs France (Zidane headbutt)
+  // Extended 27 Jun — one more accessible World Cup final
+  79, // Day 13: France 2018 WC Final vs Croatia (Mbappe)
   // Easing into Euros once WC knockouts settle
-  5,  // Day 13: England Euro 1996 semi vs Germany
   33, // Day 14: France Euro 2000 Final vs Italy (Golden Goal)
   18, // Day 15: Spain Euro 2008 Final vs Germany
   26, // Day 16: England Euro 2004 QF vs Portugal (penalty shootout)
   2,  // Day 17: England Euro 2020 Final vs Italy
   28, // Day 18: Italy Euro 2020 Final vs England at Wembley (same match, other side)
   4,  // Day 19: England Euro 2024 Final vs Spain
+  // Extra additions — Spain 2010 fills the other side of the Netherlands match,
+  // AFCON finals add international variety beyond Europe/South America
+  80, // Day 20: Spain 2010 WC Final vs Netherlands (Iniesta winner)
+  81, // Day 21: Ivory Coast AFCON Final vs Nigeria (host nation comeback)
+  82, // Day 22: Nigeria AFCON Final vs Ivory Coast (same match, other side)
   // After this, falls back to looping ALL puzzles by id so the
   // queue never runs dry — see dailyPuzzleForToday() below.
 ];
@@ -1605,7 +1794,10 @@ function dailyPuzzleForToday(){
   } else {
     // Queue exhausted — loop through the full library deterministically
     // so every visitor on a given day still sees the same puzzle.
-    const allIds = PUZZLES.map(p=>p.id).sort((a,b)=>a-b);
+    // Pre-1998 lineups are excluded from this fallback (and from the curated
+    // queue) since they skew toward an older, harder-to-recall audience —
+    // they're still browsable directly from the picker for anyone who wants them.
+    const allIds = PUZZLES.filter(p=>p.year>=1998).map(p=>p.id).sort((a,b)=>a-b);
     puzzleId = allIds[((idx - DAILY_QUEUE.length) % allIds.length + allIds.length) % allIds.length];
   }
   return PUZZLES.find(p=>p.id===puzzleId) || PUZZLES[0];
@@ -1654,6 +1846,33 @@ function closeHelpModal(){
   if(m) m.classList.remove('show');
   try{localStorage.setItem('lxi_seen_help','true');}catch(e){}
 }
+
+// ── Badge detail modal ──
+function showBadgeDetail(badgeId){
+  const statuses=getBadgeStatuses();
+  const b=statuses.find(x=>x.id===badgeId);
+  if(!b) return;
+  const pct=Math.min(100, Math.round((b.progress/Math.max(b.target,1))*100));
+  const content=document.getElementById('badge-modal-content');
+  content.innerHTML=`
+    <span class="badge-detail-icon">${b.icon}</span>
+    <div class="badge-detail-title">${b.name}</div>
+    <div class="badge-detail-desc">${b.desc}</div>
+    <div class="badge-progress-bar"><div class="badge-progress-fill" style="width:${pct}%"></div></div>
+    <div class="badge-progress-label">${b.progress} / ${b.target}</div>
+    <div class="badge-status-pill" style="background:${b.unlocked?'rgba(181,255,77,0.18)':'rgba(255,255,255,0.08)'};color:${b.unlocked?'var(--lime)':'var(--muted)'}">${b.unlocked?'✓ Unlocked':'🔒 Locked'}</div>
+    <button id="badge-close-btn" style="display:block;width:100%;margin-top:18px;background:var(--lime);color:#0a2000;border:none;border-radius:12px;padding:12px;font-family:var(--fh);font-weight:800;font-size:0.95rem;cursor:pointer">Close</button>
+  `;
+  document.getElementById('badge-modal').classList.add('show');
+  document.getElementById('badge-close-btn').addEventListener('click',closeBadgeModal);
+}
+function closeBadgeModal(){
+  document.getElementById('badge-modal').classList.remove('show');
+}
+document.getElementById('badge-modal').addEventListener('click',(e)=>{
+  if(e.target.id==='badge-modal') closeBadgeModal(); // tap outside card to dismiss
+});
+
 document.getElementById('help-btn').addEventListener('click',showHelpModal);
 document.getElementById('help-close-btn').addEventListener('click',closeHelpModal);
 document.getElementById('help-modal').addEventListener('click',(e)=>{
@@ -2439,7 +2658,7 @@ legendary-xi.vercel.app`;
   const qmsg=document.getElementById('quick-save-msg');if(qmsg)qmsg.textContent='';
   const qbtn=document.getElementById('quick-save-btn');if(qbtn){qbtn.disabled=false;qbtn.textContent='💾 Save';}
   const qrow=document.getElementById('quick-save-row');if(qrow)qrow.style.display='flex';
-  saveStatForPuzzle(String(S.puzzle.id), grade.letter, finalScore, elapsed);
+  saveStatForPuzzle(String(S.puzzle.id), grade.letter, finalScore, elapsed, hintedCount===0 && revealCount===0);
   // Daily streak — only counts if this was opened via the Daily Lineup entry point
   let dailyStreakInfo = null;
   if(S.isDaily){
@@ -2623,6 +2842,30 @@ function buildPickerList(){
       <div style="text-align:center;overflow:hidden"><div style="font-family:var(--fh);font-size:0.72rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">${summary.bestPuzzle}</div><div style="font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Best On</div></div>
     `;
   }
+
+  // Badges row
+  const badgeStatuses = getBadgeStatuses();
+  const badgeRow = document.getElementById('picker-badge-row');
+  if(badgeRow){
+    badgeRow.style.display = 'flex';
+    badgeRow.innerHTML = badgeStatuses.map(b=>`
+      <div class="badge-chip${b.unlocked?' unlocked':''}" onclick="showBadgeDetail('${b.id}')" title="${b.name}">
+        <div class="badge-icon">${b.icon}</div>
+      </div>
+    `).join('');
+  }
+  // Celebrate newly-unlocked badges (fires once per badge, tracked via localStorage)
+  try{
+    const seenBadges=new Set(JSON.parse(localStorage.getItem('lxi_seen_badges')||'[]'));
+    badgeStatuses.forEach(b=>{
+      if(b.unlocked && !seenBadges.has(b.id)){
+        seenBadges.add(b.id);
+        toast(`${b.icon} Badge unlocked: ${b.name}!`,'ok');
+        if(window.posthog) posthog.capture('badge_unlocked',{badge_id:b.id, badge_name:b.name});
+      }
+    });
+    localStorage.setItem('lxi_seen_badges', JSON.stringify([...seenBadges]));
+  }catch(e){}
   const scroll = document.getElementById('picker-scroll');
   scroll.innerHTML = '';
 
@@ -2660,7 +2903,7 @@ function buildPickerList(){
   ordered.forEach(comp => {
     // If a filter is active, skip every group except the selected one
     if(activeCompFilter !== null && activeCompFilter !== comp) return;
-    const puzzles = groups.get(comp).slice().sort((a,b) => a.year - b.year);
+    const puzzles = groups.get(comp).slice().sort((a,b) => b.year - a.year);
     const grp = document.createElement('div');
     grp.className = 'picker-group';
     grp.id = 'picker-group-'+comp.replace(/[^a-zA-Z0-9]/g,'');
